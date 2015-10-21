@@ -1,15 +1,23 @@
 div {
-text-align: center;
-border: 2px inset gray;
+	text-align: center;
+	border: 2px inset gray;
 }
 
-ul {
-float: left;
+section {
+	width: 1000px;
+	height: 500px;
+	float: left;
+}
+
+nav {
+	width: 200px;
+	height: 300px;
+	float: left;
 }
 
 #gameBox{
-width: 60vw;
-height: 60vw;
-margin: auto;
-display: block;
+	width: 60vw;
+	height: 60vw;
+	margin: auto;
+	display: block;
 }
