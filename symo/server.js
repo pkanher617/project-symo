@@ -37,10 +37,9 @@ function renderHTML(req,res){
     q = url.parse(req.url,true).query;
     switch(uri){
     case "/landing.html":
+    case "/game.html":
 	res.writeHead(200, {'Content-Type': 'text/html'});
 	renderPath(req,res);
-	res.write("x + y = " + (parseInt(q.x) + parseInt(q.y)).toString());
-	//an example of using GET variables
 	res.end();
     }
 }
@@ -91,15 +90,6 @@ dispatcher.onGet(/\//, function(req, res) {
 	
     }
 });	
-
-//render the landing page
-dispatcher.onGet("/landing.html", function(req, res) {
-    q = url.parse(req.url,true).query;
-    res.writeHead(200, {'Content-Type': 'text/html'});
-    renderPath(req,res);
-    res.write("x + y = " + (parseInt(get.x) + parseInt(get.y)).toString());//an example of using GET variables
-    res.end();
-});    
 
 dispatcher.onPost("/beginLevel", function(req, res) {
     res.writeHead(200, {'Content-Type': 'application/json'});
