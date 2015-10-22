@@ -3,6 +3,7 @@ dispatcher = require('./httpdispatcher');
 url = require("url"),
 path = require("path"),
 fs = require("fs");
+qs = require('querystring');
 
 PORT = process.argv[2] || 8888; 
 
@@ -19,7 +20,7 @@ function handleRequest(request, response){//called whenever a clients requests d
 function renderPath(request,response){//outputs file contents corresponding to request to buffer response
     var uri = url.parse(request.url).pathname,
     filename = path.join(process.cwd()+'/content', uri);
-    exists = path.existsSync(filename);
+    exists = true;
     if(!exists) {
 	response.write("404 Not Found\n");
 	return;
@@ -51,7 +52,7 @@ dispatcher.setStatic('resources');
 dispatcher.onGet(/\//, function(req, res) {
     var uri = url.parse(req.url).pathname;
     pth = path.join(process.cwd() + '/content', uri);
-    exists = path.existsSync(pth);
+    exists = true;
     if(!exists) {
 	res.end();
 	return;
@@ -100,12 +101,51 @@ dispatcher.onGet("/landing.html", function(req, res) {
     res.end();
 });    
 
-
-dispatcher.onPost("/post1", function(req, res) {//this is included to show the onPost method in use
-    //anything in here works just like it would in onGet
-    res.writeHead(200, {'Content-Type': 'text/html'});
-    res.end('Got Post Data');
+dispatcher.onPost("/beginLevel", function(req, res) {
+    res.writeHead(200, {'Content-Type': 'text/json'});
+    var post = qs.parse(req.body);
+    var userID = post.userID;
+    var level = dbGetLevelNumber(userID);
+    var difficulty = dbGetDifficulty(userID);
+    res.write(JSON.stringify({success: true, level: level, difficulty: difficulty}));
+    res.end();
 });
+
+dispatcher.onPost("/endLevel", function(req, res) {
+    res.writeHead(200, {'Content-Type': 'text/json'});
+    var post = qs.parse(req.body);
+    var userID = post.userID;
+    var level = post.level;
+    var completed = post.completed;
+    var timeTaken = post.timeTaken;
+    var numTries = post.numTries;
+    if (completed) {
+        dbSetLevelNumber(userID, parseInt(level) + 1);
+        dbRecordLevelStats(userID, level, completed, timeTaken, numTries);
+    }
+    res.write(JSON.stringify({success: true}));
+    res.end();
+});
+
+function dbGetLevelNumber(userID) {
+    // Fetch the level that the user is currently on from the database
+    return 13; // Placeholder
+}
+
+function dbGetDifficulty(userID) {
+    // Fetch the user's difficulty setting
+    return 5;
+}
+
+function dbSetLevelNumber(userID, level) {
+    // Set the user's current level in the database
+    console.log(userID + " is now playing level " + level);
+}
+
+function dbRecordLevelStats(userID, level, completed, timeTaken, numTries) {
+    // Track the statistics related to how well the user did on the level
+    console.log(userID + " " + (completed ? "completed" : "gave up on") + " level " + level + " after " + timeTaken + " seconds and " + numTries + " tries");
+}
 
 
 var server = http.createServer(handleRequest);
