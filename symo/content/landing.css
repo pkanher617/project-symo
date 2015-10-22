@@ -1,6 +1,9 @@
 div {
-	text-align: center;
-	border: 2px inset gray;
+text-align: center;
+border: 2px inset gray;
+}
+-ul{
+-float: left	
 }
 
 section {
@@ -16,8 +19,8 @@ nav {
 }
 
 #gameBox{
-	width: 60vw;
-	height: 60vw;
-	margin: auto;
-	display: block;
+width: 60vw;
+height: 60vw;
+margin: auto;
+display: block;
 }
