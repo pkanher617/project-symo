@@ -102,7 +102,7 @@ dispatcher.onGet("/landing.html", function(req, res) {
 });    
 
 dispatcher.onPost("/beginLevel", function(req, res) {
-    res.writeHead(200, {'Content-Type': 'text/json'});
+    res.writeHead(200, {'Content-Type': 'application/json'});
     var post = qs.parse(req.body);
     var userID = post.userID;
     var level = dbGetLevelNumber(userID);
@@ -112,7 +112,7 @@ dispatcher.onPost("/beginLevel", function(req, res) {
 });
 
 dispatcher.onPost("/endLevel", function(req, res) {
-    res.writeHead(200, {'Content-Type': 'text/json'});
+    res.writeHead(200, {'Content-Type': 'application/json'});
     var post = qs.parse(req.body);
     var userID = post.userID;
     var level = post.level;
