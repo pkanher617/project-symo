@@ -38,7 +38,7 @@ function SetupDragDrop(){
 		var o = oList[i];
 		if (o.className == "DropTarget" || o.className == "StartTarget"){
 			oDragTargets[oDragTargets.length] = GetObjPos(o);
-		}else if (o.className == "Draggable"){
+		}else if (o.className == "Draggable" || o.className == "StarDraggable"){
 			MakeDragable(o);
 		}
 	}
@@ -356,6 +356,136 @@ function createCell(cell, text, style) {
    padding: 3px;
 }
 
+.StarDraggable{
+	cursor:move;
+   -moz-user-select: -moz-none;   
+   -khtml-user-select: none;   
+   -webkit-user-select: none;   
+   -o-user-select: none;   
+   user-select: none;
+   width: 50px; 
+   height:50px; 
+   padding: 3px;
+   content:url("symoGame1Star.png");
+}
+
+.TriangleDraggable{
+	cursor:move;
+   -moz-user-select: -moz-none;   
+   -khtml-user-select: none;   
+   -webkit-user-select: none;   
+   -o-user-select: none;   
+   user-select: none;
+   width: 50px; 
+   height:50px; 
+   padding: 3px;
+   content:url("symoGame1Triangle.png");
+}
+
+.CloudDraggable{
+	cursor:move;
+   -moz-user-select: -moz-none;   
+   -khtml-user-select: none;   
+   -webkit-user-select: none;   
+   -o-user-select: none;   
+   user-select: none;
+   width: 50px; 
+   height:50px; 
+   padding: 3px;
+   content:url("symoGame1Cloud.png");
+}
+
+.DiamondDraggable{
+	cursor:move;
+   -moz-user-select: -moz-none;   
+   -khtml-user-select: none;   
+   -webkit-user-select: none;   
+   -o-user-select: none;   
+   user-select: none;
+   width: 50px; 
+   height:50px; 
+   padding: 3px;
+   content:url("symoGame1Diamond.png");
+}
+
+.DropletDraggable{
+	cursor:move;
+   -moz-user-select: -moz-none;   
+   -khtml-user-select: none;   
+   -webkit-user-select: none;   
+   -o-user-select: none;   
+   user-select: none;
+   width: 50px; 
+   height:50px; 
+   padding: 3px;
+   content:url("symoGame1Droplet.png");
+}
+
+.EyeDraggable{
+	cursor:move;
+   -moz-user-select: -moz-none;   
+   -khtml-user-select: none;   
+   -webkit-user-select: none;   
+   -o-user-select: none;   
+   user-select: none;
+   width: 50px; 
+   height:50px; 
+   padding: 3px;
+   content:url("symoGame1Eye.png");
+}
+
+.HeartDraggable{
+	cursor:move;
+   -moz-user-select: -moz-none;   
+   -khtml-user-select: none;   
+   -webkit-user-select: none;   
+   -o-user-select: none;   
+   user-select: none;
+   width: 50px; 
+   height:50px; 
+   padding: 3px;
+   content:url("symoGame1Heart.png");
+}
+
+.HexagonDraggable{
+	cursor:move;
+   -moz-user-select: -moz-none;   
+   -khtml-user-select: none;   
+   -webkit-user-select: none;   
+   -o-user-select: none;   
+   user-select: none;
+   width: 50px; 
+   height:50px; 
+   padding: 3px;
+   content:url("symoGame1Hexagon.png");
+}
+
+.LightningDraggable{
+	cursor:move;
+   -moz-user-select: -moz-none;   
+   -khtml-user-select: none;   
+   -webkit-user-select: none;   
+   -o-user-select: none;   
+   user-select: none;
+   width: 50px; 
+   height:50px; 
+   padding: 3px;
+   content:url("symoGame1Lightning.png");
+}
+
+.PentagonDraggable{
+	cursor:move;
+   -moz-user-select: -moz-none;   
+   -khtml-user-select: none;   
+   -webkit-user-select: none;   
+   -o-user-select: none;   
+   user-select: none;
+   width: 50px; 
+   height:50px; 
+   padding: 3px;
+   content:url("symoGame1Pentagon.png");
+}
+
 .DropTarget{
 	width: 60px; 
 	height:60px; 
@@ -388,31 +518,31 @@ function createCell(cell, text, style) {
 	<div id = 'syms'><h2 id = "t1">Logic Symbols</h2></div>
 	<div align = center>
 	<div class="StartTarget">
-		<div class="Draggable" id = "s0" selectable="no" style="background-color: purple;" ></div></div>
+		<div class="StarDraggable" id = "s0" selectable="no" ></div></div>
 	<div class="StartTarget">
-		<div class="Draggable" id = "s1" selectable="no" style="background-color: brown;"></div></div>
+		<div class="CloudDraggable" id = "s1" selectable="no"></div></div>
 	<div class="StartTarget">
-		<div class="Draggable" id = "s2" selectable="no" style="background-color: blue;"></div></div>
+		<div class="DiamondDraggable" id = "s2" selectable="no" ></div></div>
 	<div class="StartTarget">
-		<div class="Draggable" id = "s3" selectable="no" style="background-color: indigo;"></div></div>
+		<div class="DropletDraggable" id = "s3" selectable="no" ></div></div>
 	</div>
 </nav>
 <table align="center">
 	<tr>
 		<td><div class="StartTarget">
-			<div class="Draggable" id = "e0" selectable="no" style="background-color: Red;" ></div></div></td>
+			<div class="EyeDraggable" id = "e0" selectable="no"  ></div></div></td>
 		<td><div class="StartTarget">
-			<div class="Draggable" id = "e1" selectable="no" style="background-color: Yellow;"></div></div></td>
+			<div class="HeartDraggable" id = "e1" selectable="no" ></div></div></td>
 		<td><div class="StartTarget">
-			<div class="Draggable" id = "e2" selectable="no" style="background-color: Green;"></div></div></td>
+			<div class="HexagonDraggable" id = "e2" selectable="no"></div></div></td>
 		<td><div class="StartTarget">
-			<div class="Draggable" id = "e3" selectable="no" style="background-color: Pink;"></div></div></td>
+			<div class="LightningDraggable" id = "e3" selectable="no"></div></div></td>
 		<td><div class="StartTarget">
-			<div class="Draggable" id = "e4" selectable="no" style="background-color: Black;"></div></div></td>
+			<div class="PentagonDraggable" id = "e4" selectable="no"></div></div></td>
 		<td><div class="StartTarget">
-			<div class="Draggable" id = "e5" selectable="no" style="background-color: Orange;"></div></div></td>
+			<div class="TriangleDraggable" id = "e5" selectable="no"></div></div></td>
 		<td><div class="StartTarget">
-			<div class="Draggable" id = "e6" selectable="no" style="background-color: Gray;"></div></div></td>
+			<div class="Draggable" id = "e6" selectable="no" style="background-color: orange;"></div></div></td>
 	</tr>
 </table>
 <h1 id = "gameSentence">"If Jason works hard, his son will go to college and his wife can buy lots of things"</h1>
