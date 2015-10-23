@@ -3,10 +3,17 @@ dispatcher = require('./httpdispatcher');
 url = require("url"),
 path = require("path"),
 fs = require("fs");
-qs = require('querystring');
 
 PORT = process.argv[2] || 8888; 
 
+function existsSync(pth){
+    try {
+	data = fs.readFileSync(pth);
+	return true;
+    } catch (e) {
+	return false;
+    }
+}
 
 function handleRequest(request, response){//called whenever a clients requests data from our server
     try {
@@ -20,13 +27,11 @@ function handleRequest(request, response){//called whenever a clients requests d
 function renderPath(request,response){//outputs file contents corresponding to request to buffer response
     var uri = url.parse(request.url).pathname,
     filename = path.join(process.cwd()+'/content', uri);
-    exists = true;
+    exists = existsSync(filename);
     if(!exists) {
 	response.write("404 Not Found\n");
 	return;
     }
-    
-    if (fs.statSync(filename).isDirectory()) filename += '/index.html';
     
     file = fs.readFileSync(filename, "binary");
     response.write(file, "binary");
@@ -37,7 +42,11 @@ function renderHTML(req,res){
     q = url.parse(req.url,true).query;
     switch(uri){
     case "/landing.html":
-    case "/game.html":
+	res.writeHead(200, {'Content-Type': 'text/html'});
+	renderPath(req,res);
+	res.end();
+	break;
+    default:
 	res.writeHead(200, {'Content-Type': 'text/html'});
 	renderPath(req,res);
 	res.end();
@@ -51,7 +60,7 @@ dispatcher.setStatic('resources');
 dispatcher.onGet(/\//, function(req, res) {
     var uri = url.parse(req.url).pathname;
     pth = path.join(process.cwd() + '/content', uri);
-    exists = true;
+    exists = existsSync(pth);
     if(!exists) {
 	res.end();
 	return;
@@ -87,9 +96,46 @@ dispatcher.onGet(/\//, function(req, res) {
             res.write(data);
         res.end();
 	});
+    }
+    
+    if(req.url.indexOf('.jpg') != -1){ //req.url has the pathname, check if it conatins '.js'
+	
+	fs.readFile(pth, function (err, data) {
+            if (err) console.log(err);
+            res.writeHead(200, {'Content-Type': 'text/javascript'});
+            res.write(data);
+            res.end();
+	});
 	
     }
+
+    if(req.url.indexOf('.png') != -1){ //req.url has the pathname, check if it conatins '.js'
+	
+	fs.readFile(pth, function (err, data) {
+            if (err) console.log(err);
+            res.writeHead(200, {'Content-Type': 'text/javascript'});
+            res.write(data);
+            res.end();
+	});
+	
+    }
+    
 });	
+
+//render the landing page
+dispatcher.onGet("/landing.html", function(req, res) {
+    q = url.parse(req.url,true).query;
+    res.writeHead(200, {'Content-Type': 'text/html'});
+    renderPath(req,res);
+    res.end();
+});    
+
+
+dispatcher.onPost("/post1", function(req, res) {//this is included to show the onPost method in use
+    //anything in here works just like it would in onGet
+    res.writeHead(200, {'Content-Type': 'text/html'});
+    res.end('Got Post Data');
+});
 
 dispatcher.onPost("/beginLevel", function(req, res) {
     res.writeHead(200, {'Content-Type': 'application/json'});
@@ -136,7 +182,6 @@ function dbRecordLevelStats(userID, level, completed, timeTaken, numTries) {
     // Track the statistics related to how well the user did on the level
     console.log(userID + " " + (completed ? "completed" : "gave up on") + " level " + level + " after " + timeTaken + " seconds and " + numTries + " tries");
 }
-
 
 var server = http.createServer(handleRequest);
 
