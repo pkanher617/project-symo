@@ -7,13 +7,13 @@ border: 2px inset gray;
 }
 
 section {
-	width: 80vw;
-	height: 500px;
+	width: 82vw;
+	height: 600px;
 	float: left;
 }
 
 nav {
-	width: 175px;
+	width: 200px;
 	height: 300px;
 	float: left;
 }
