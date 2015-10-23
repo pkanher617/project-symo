@@ -23,3 +23,159 @@ border: 2px inset gray;
 nav{
 	float: right;
 }
+
+.Draggable{
+	cursor:move;
+   -moz-user-select: -moz-none;   
+   -khtml-user-select: none;   
+   -webkit-user-select: none;   
+   -o-user-select: none;   
+   user-select: none;
+   width: 50px; 
+   height:50px; 
+   padding: 3px;
+}
+
+.StarDraggable{
+	cursor:move;
+   -moz-user-select: -moz-none;   
+   -khtml-user-select: none;   
+   -webkit-user-select: none;   
+   -o-user-select: none;   
+   user-select: none;
+   width: 50px; 
+   height:50px; 
+   padding: 3px;
+   content:url("symoGame1Star.png");
+}
+
+.TriangleDraggable{
+	cursor:move;
+   -moz-user-select: -moz-none;   
+   -khtml-user-select: none;   
+   -webkit-user-select: none;   
+   -o-user-select: none;   
+   user-select: none;
+   width: 50px; 
+   height:50px; 
+   padding: 3px;
+   content:url("symoGame1Triangle.png");
+}
+
+.CloudDraggable{
+	cursor:move;
+   -moz-user-select: -moz-none;   
+   -khtml-user-select: none;   
+   -webkit-user-select: none;   
+   -o-user-select: none;   
+   user-select: none;
+   width: 50px; 
+   height:50px; 
+   padding: 3px;
+   content:url("symoGame1Cloud.png");
+}
+
+.DiamondDraggable{
+	cursor:move;
+   -moz-user-select: -moz-none;   
+   -khtml-user-select: none;   
+   -webkit-user-select: none;   
+   -o-user-select: none;   
+   user-select: none;
+   width: 50px; 
+   height:50px; 
+   padding: 3px;
+   content:url("symoGame1Diamond.png");
+}
+
+.DropletDraggable{
+	cursor:move;
+   -moz-user-select: -moz-none;   
+   -khtml-user-select: none;   
+   -webkit-user-select: none;   
+   -o-user-select: none;   
+   user-select: none;
+   width: 50px; 
+   height:50px; 
+   padding: 3px;
+   content:url("symoGame1Droplet.png");
+}
+
+.EyeDraggable{
+	cursor:move;
+   -moz-user-select: -moz-none;   
+   -khtml-user-select: none;   
+   -webkit-user-select: none;   
+   -o-user-select: none;   
+   user-select: none;
+   width: 50px; 
+   height:50px; 
+   padding: 3px;
+   content:url("symoGame1Eye.png");
+}
+
+.HeartDraggable{
+	cursor:move;
+   -moz-user-select: -moz-none;   
+   -khtml-user-select: none;   
+   -webkit-user-select: none;   
+   -o-user-select: none;   
+   user-select: none;
+   width: 50px; 
+   height:50px; 
+   padding: 3px;
+   content:url("symoGame1Heart.png");
+}
+
+.HexagonDraggable{
+	cursor:move;
+   -moz-user-select: -moz-none;   
+   -khtml-user-select: none;   
+   -webkit-user-select: none;   
+   -o-user-select: none;   
+   user-select: none;
+   width: 50px; 
+   height:50px; 
+   padding: 3px;
+   content:url("symoGame1Hexagon.png");
+}
+
+.LightningDraggable{
+	cursor:move;
+   -moz-user-select: -moz-none;   
+   -khtml-user-select: none;   
+   -webkit-user-select: none;   
+   -o-user-select: none;   
+   user-select: none;
+   width: 50px; 
+   height:50px; 
+   padding: 3px;
+   content:url("symoGame1Lightning.png");
+}
+
+.PentagonDraggable{
+	cursor:move;
+   -moz-user-select: -moz-none;   
+   -khtml-user-select: none;   
+   -webkit-user-select: none;   
+   -o-user-select: none;   
+   user-select: none;
+   width: 50px; 
+   height:50px; 
+   padding: 3px;
+   content:url("symoGame1Pentagon.png");
+}
+
+.DropTarget{
+	width: 60px; 
+	height:60px; 
+	background-color: LightBlue;
+	border: 10px solid white;
+}
+
+.StartTarget{
+	width: 60px; 
+	height:60px; 
+	background-color: White;
+	border: 10px solid white;
+}
