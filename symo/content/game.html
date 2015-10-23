@@ -1,176 +1,254 @@
 <html>
 <head>
-	<link rel="stylesheet" type="text/css" href="compressed.button.css" />
-	<link rel="stylesheet" href="game.css">
+<link rel="stylesheet" type="text/css" href="compressed.button.css" />
+<link rel="stylesheet" href="game.css">
 
-	<script src="http://www.html5canvastutorials.com/libraries/kinetic-v3.10.0.js"></script>
-	<script type="text/javascript">
-	var oDragTargets = [];
-	var oDragTarget = null;
-	var oDragItem = null;
-	var iClickOffsetX = 0;
-	var iClickOffsetY = 0;
-	var INTERVAL = 20;
+<script src="http://www.html5canvastutorials.com/libraries/kinetic-v3.10.0.js"></script>
+<script type="text/javascript">
+var oDragTargets = [];
+var oDragTarget = null;
+var oDragItem = null;
+var iClickOffsetX = 0;
+var iClickOffsetY = 0;
+var INTERVAL = 20;
+var condition = [['red', 'Jason works hard'],
+				['orange', 'his son will go to college'],
+				['yellow', 'his wife can buy lots of things']];
+				
 
-	function OnLoad(){
+function OnLoad(){
+	document.getElementById("ins1").style.font = "italic bold 20px arial,serif";
+	document.getElementById("ins2").style.font = "italic bold 20px arial,serif";
+	document.getElementById("t1").style.font = "italic bold 20px arial,serif";
+	document.getElementById("gameSentence").style.font = "italic bold 30px arial,serif";
+
+
+
+
+	//alert(condition[0][0]);
+	SetupDragDrop();
+	//appendColumn();
+}
+
+function SetupDragDrop(){
+	oDragTargets = [];
+	
+	var oList = document.getElementsByTagName("div");
+	for(var i=0; i<oList.length; i++){
+		var o = oList[i];
+		if (o.className == "DropTarget" || o.className == "StartTarget"){
+			oDragTargets[oDragTargets.length] = GetObjPos(o);
+		}else if (o.className == "Draggable"){
+			MakeDragable(o);
+		}
+	}
+}
+
+function MakeDragable(oBox){
+	if (navigator.platform=="iPad"){
+		oBox.ontouchstart= function(e){TouchStart(e)};
+		oBox.ontouchmove=function(e){TouchMove(e)};
+		oBox.ontouchend=function(e){TouchEnd(e)};
+	}else{
+		oBox.onmousemove= function(e){DragMove(oBox,e)};
+		oBox.onmouseup=function(e){DragStop(oBox,e)};
+		oBox.onmousedown=function(e){DragStart(oBox,e);return false};
+	}	
+}
+
+function TouchStart(e){
+	var oPos = GetObjPos(e.target);
+	iClickOffsetX = e.targetTouches[0].pageX - oPos.x;
+	iClickOffsetY = e.targetTouches[0].pageY - oPos.y;
+}
+
+function DragStart(o,e){
+	if(!e) var e = window.event;
+	oDragItem = o;
+	
+	if (e.offsetX){
+		iClickOffsetX = e.offsetX;
+		iClickOffsetY = e.offsetY;	
+	}else{
+		var oPos = GetObjPos(o);
+		iClickOffsetX = e.clientX - oPos.x;
+		iClickOffsetY = e.clientY - oPos.y;
+	}
+	
+	if (o.setCapture){
+		o.setCapture();
+	}else{
+		window.addEventListener ("mousemove", DragMove2, true);
+		window.addEventListener ("mouseup",   DragStop2, true);
+	}
+}
+
+function DragMove2(e){
+	DragMove(oDragItem,e);
+}
+
+function DragStop2(e){
+	DragStop(oDragItem,e);
+}
+
+function DragMove(o,e){
+	if (oDragItem==null) return;
+
+	if(!e) var e = window.event;
+	var x = e.clientX + document.body.scrollLeft - document.body.clientLeft - iClickOffsetX;
+	var y = e.clientY + document.body.scrollTop  - document.body.clientTop - iClickOffsetY;
+	
+	HandleDragMove(x,y);
+}
+
+function HandleDragMove(x,y){
+	with(oDragItem.style){
+		zIndex = 1000;
+		position="absolute";
+		left=x;
+		top=y;
+	}
+	
+	for (var i=0; i< oDragTargets.length; i++){
+		var oTarget = oDragTargets[i];
+		if (oTarget.x < x && oTarget.y < y && (oTarget.x + oTarget.w) > x && (oTarget.y + oTarget.h) > y){
+			if (oDragTarget!=null && oDragTarget != oTarget.o) OnTargetOut();
+			oDragTarget = oTarget.o;
+			OnTargetOver();
+			return;
+		}
+	}
+	
+	
+	
+	if (oDragTarget){
+		OnTargetOut();
+		oDragTarget = null;
+	}
+}
+
+function TouchMove(e){
+    e.preventDefault();
+    var x = e.targetTouches[0].pageX - iClickOffsetX;
+    var y = e.targetTouches[0].pageY - iClickOffsetY;
+    oDragItem = e.targetTouches[0].target;
+    HandleDragMove(x,y);
+}
+
+function DragStop(o,e){
+	if (o.releaseCapture){
+		o.releaseCapture();
+	}else if (oDragItem){
+		window.removeEventListener ("mousemove", DragMove2, true);
+		window.removeEventListener ("mouseup",   DragStop2, true);
+	}
+	
+	HandleDragStop();
+}
+
+function checkWin(){
+	oDrop = [];
+	var oList = document.getElementsByTagName("div");
+	for(var i=0; i<oList.length; i++){
+		var o = oList[i];
+		if (o.className == "DropTarget"){
+			oDrop.push(o);
+		}
+	}
+	var ind = 0;
+	for(var i=0; i<oDrop.length; i++){
+		
+		if (oDrop[i].innerHTML == ''){
+			if (ind == 1){
+				ind = 2;
+			}
+			else{ind = 1;}
+		}
+		
+	}
+	if (ind == 1 && oDrop.length >= 6){
+		
+		if (oDrop[0].lastChild.id == "e0" &&
+			oDrop[1].lastChild.id == "e5" &&
+			oDrop[2].lastChild.id == 'e1'&&
+			oDrop[3].lastChild.id == 'e2'&&
+			oDrop[4].lastChild.id == 's2'){
+			alert("You Win!");}
+		
+	}
+}
+
+
+function checkAllFill(){
+	oDrop = [];
+	var oList = document.getElementsByTagName("div");
+	for(var i=0; i<oList.length; i++){
+		var o = oList[i];
+		if (o.className == "DropTarget"){
+			oDrop.push(o);
+		}
+	}
+	var ind = 0;
+	for(var i=0; i<oDrop.length; i++){
+		//alert(oDrop[i].innerHTML);
+		if (oDrop[i].innerHTML == ''){
+			ind = 1;
+		}
+		
+	}
+	if (ind == 0){
+		appendColumn();
 		SetupDragDrop();
 	}
+	
+}
 
-	function SetupDragDrop(){
-		oDragTargets = [];
+
+function HandleDragStop(){
+	
 		
-		var oList = document.getElementsByTagName("div");
-		for(var i=0; i<oList.length; i++){
-			var o = oList[i];
-			if (o.className == "DropTarget" || o.className == "StartTarget"){
-				oDragTargets[oDragTargets.length] = GetObjPos(o);
-			}else if (o.className == "Draggable" || o.className == "StarDraggable"){
-				MakeDragable(o);
-			}
+	if (oDragItem==null) return;
+
+	if (oDragTarget){
+	    
+		OnTargetOut();
+		OnTargetDrop();
+		
+		checkAllFill();
+		checkWin();
+		oDragTarget = null;
+	}
+	
+	oDragItem.style.zIndex = 1;
+	oDragItem = null;
+}
+
+function TouchEnd(e){
+	e.target.innerHTML = "TouchEnd";
+	HandleDragStop();
+}
+
+function $(s){
+	return document.getElementById(s);
+}
+
+function GetObjPos(obj){
+	var x = 0;
+	var y = 0;
+	var o = obj;
+	
+	var w = obj.offsetWidth;
+	var h = obj.offsetHeight;
+	if (obj.offsetParent) {
+		x = obj.offsetLeft
+		y = obj.offsetTop
+		while (obj = obj.offsetParent){
+			x += obj.offsetLeft;
+			y += obj.offsetTop;
 		}
 	}
-
-	function MakeDragable(oBox){
-		if (navigator.platform=="iPad"){
-			oBox.ontouchstart= function(e){TouchStart(e)};
-			oBox.ontouchmove=function(e){TouchMove(e)};
-			oBox.ontouchend=function(e){TouchEnd(e)};
-		}else{
-			oBox.onmousemove= function(e){DragMove(oBox,e)};
-			oBox.onmouseup=function(e){DragStop(oBox,e)};
-			oBox.onmousedown=function(e){DragStart(oBox,e);return false};
-		}	
-	}
-
-	function TouchStart(e){
-		var oPos = GetObjPos(e.target);
-		iClickOffsetX = e.targetTouches[0].pageX - oPos.x;
-		iClickOffsetY = e.targetTouches[0].pageY - oPos.y;
-	}
-
-	function DragStart(o,e){
-		if(!e) var e = window.event;
-		oDragItem = o;
-		
-		if (e.offsetX){
-			iClickOffsetX = e.offsetX;
-			iClickOffsetY = e.offsetY;	
-		}else{
-			var oPos = GetObjPos(o);
-			iClickOffsetX = e.clientX - oPos.x;
-			iClickOffsetY = e.clientY - oPos.y;
-		}
-		
-		if (o.setCapture){
-			o.setCapture();
-		}else{
-			window.addEventListener ("mousemove", DragMove2, true);
-			window.addEventListener ("mouseup",   DragStop2, true);
-		}
-	}
-
-	function DragMove2(e){
-		DragMove(oDragItem,e);
-	}
-
-	function DragStop2(e){
-		DragStop(oDragItem,e);
-	}
-
-	function DragMove(o,e){
-		if (oDragItem==null) return;
-
-		if(!e) var e = window.event;
-		var x = e.clientX + document.body.scrollLeft - document.body.clientLeft - iClickOffsetX;
-		var y = e.clientY + document.body.scrollTop  - document.body.clientTop - iClickOffsetY;
-		
-		HandleDragMove(x,y);
-	}
-
-	function HandleDragMove(x,y){
-		with(oDragItem.style){
-			zIndex = 1000;
-			position="absolute";
-			left=x;
-			top=y;
-		}
-		
-		for (var i=0; i< oDragTargets.length; i++){
-			var oTarget = oDragTargets[i];
-			if (oTarget.x < x && oTarget.y < y && (oTarget.x + oTarget.w) > x && (oTarget.y + oTarget.h) > y){
-				if (oDragTarget!=null && oDragTarget != oTarget.o) OnTargetOut();
-				oDragTarget = oTarget.o;
-				OnTargetOver();
-				return;
-			}
-		}
-		
-		
-		
-		if (oDragTarget){
-			OnTargetOut();
-			oDragTarget = null;
-		}
-	}
-
-	function TouchMove(e){
-		e.preventDefault();
-		var x = e.targetTouches[0].pageX - iClickOffsetX;
-		var y = e.targetTouches[0].pageY - iClickOffsetY;
-		oDragItem = e.targetTouches[0].target;
-		HandleDragMove(x,y);
-	}
-
-	function DragStop(o,e){
-		if (o.releaseCapture){
-			o.releaseCapture();
-		}else if (oDragItem){
-			window.removeEventListener ("mousemove", DragMove2, true);
-			window.removeEventListener ("mouseup",   DragStop2, true);
-		}
-		
-		HandleDragStop();
-	}
-
-	function HandleDragStop(){
-		if (oDragItem==null) return;
-
-		if (oDragTarget){
-			OnTargetOut();
-			OnTargetDrop();
-			oDragTarget = null;
-		}
-		
-		oDragItem.style.zIndex = 1;
-		oDragItem = null;
-	}
-
-	function TouchEnd(e){
-		e.target.innerHTML = "TouchEnd";
-		HandleDragStop();
-	}
-
-	function $(s){
-		return document.getElementById(s);
-	}
-
-	function GetObjPos(obj){
-		var x = 0;
-		var y = 0;
-		var o = obj;
-		
-		var w = obj.offsetWidth;
-		var h = obj.offsetHeight;
-		if (obj.offsetParent) {
-			x = obj.offsetLeft
-			y = obj.offsetTop
-			while (obj = obj.offsetParent){
-				x += obj.offsetLeft;
-				y += obj.offsetTop;
-			}
-		}
-		return {x:x, y:y, w:w, h:h, o:o};
-	}
+	return {x:x, y:y, w:w, h:h, o:o};
+}
 
 //Drag and Drop Events
 function OnTargetOverO(){
@@ -196,19 +274,10 @@ function OnTargetDrop(){
 	for(var i=0; i<oList.length; i++){
 		var o = oList[i];
 		if (o.className == "DropTarget"){
-			oDropTargets.push(o)
+			oDropTargets.push(o);
+			
 		}
 	}
-	
-	//for(var j=0; j<oDropTargets.length; j++){
-		//var o = oDropTargets[j];
-	//	if (j == 0 && o.lastChild.style.backgroundColor == "red"){
-	//		var div = document.getElementById("textDiv");
-	//		div.textContent = "You Win!";
-	//		var text = div.textContent;
-	//	}
-
-	//}
 	
 	
 }
@@ -228,64 +297,63 @@ function addRect (){
 }
 
 function addStar(ctx,cx,cy,spikes,r0,r1){ 
-	var rot=Math.PI/2*3,x=cx,y=cy,step=Math.PI/spikes 
-	ctx.strokeSyle="#000"; 
+ 	var rot=Math.PI/2*3,x=cx,y=cy,step=Math.PI/spikes 
+ 	ctx.strokeSyle="#000"; 
 	ctx.beginPath(); 
-	ctx.moveTo(cx,cy-r0) 
-	for(i=0;i<spikes;i++){ 
+ 	ctx.moveTo(cx,cy-r0) 
+ 	for(i=0;i<spikes;i++){ 
 		x=cx+Math.cos(rot)*r0; 
 		y=cy+Math.sin(rot)*r0; 
 		ctx.lineTo(x,y) 
 		rot+=step 
 		
-		x=cx+Math.cos(rot)*r1; 
-		y=cy+Math.sin(rot)*r1; 
-		ctx.lineTo(x,y) 
-		rot+=step 
-	} 
-	ctx.lineTo(cx,cy-r0) 
-	ctx.stroke(); 
-	ctx.closePath();
+ 		x=cx+Math.cos(rot)*r1; 
+ 		y=cy+Math.sin(rot)*r1; 
+ 		ctx.lineTo(x,y) 
+ 		rot+=step 
+ 	} 
+ 	ctx.lineTo(cx,cy-r0) 
+ 	ctx.stroke(); 
+ 	ctx.closePath();
 } 
 
+var appender = 1;
+
+function appendColumn() {
+    var tbl = document.getElementById('boxes'), // table reference
+        i;
+    // open loop for each row and append cell
+    for (i = 0; i < tbl.rows.length; i++) {
+        createCell(tbl.rows[i].insertCell(tbl.rows[i].cells.length), tbl.rows[0].cells.length, 'DropTarget');
+		
+    }
+}
+
+
+function createCell(cell, text, style) {
+    
+    var div = document.createElement('div'); // create DIV element
+	div.id = 'box' + (text - 1);
+    //txt = document.createTextNode(text); // create text node
+    //div.appendChild(txt);                    // append text node to the DIV
+    div.setAttribute('class', style);        // set DIV class attribute
+    div.setAttribute('className', style);    // set DIV class attribute for IE (?!)
+    cell.appendChild(div);                   // append DIV to the table cell
+}
 
 
 </script>
 <style>
 .Draggable{
 	cursor:move;
-	-moz-user-select: -moz-none;   
-	-khtml-user-select: none;   
-	-webkit-user-select: none;   
-	-o-user-select: none;   
-	user-select: none;
-	width: 50px; 
-	height:50px; 
-	padding: 3px;
-	content
-
-}
-
-.StarDraggable{
-	cursor:move;
-	-moz-user-select: -moz-none;   
-	-khtml-user-select: none;   
-	-webkit-user-select: none;   
-	-o-user-select: none;   
-	user-select: none;
-	background-image:url("../../images/symoGame1Star.png")
-}
-
-.LightningDraggable{
-
-}
-
-.HexagonDraggable{
-
-}
-
-.PentagonDraggable{
-
+   -moz-user-select: -moz-none;   
+   -khtml-user-select: none;   
+   -webkit-user-select: none;   
+   -o-user-select: none;   
+   user-select: none;
+   width: 50px; 
+   height:50px; 
+   padding: 3px;
 }
 
 .DropTarget{
@@ -305,80 +373,65 @@ function addStar(ctx,cx,cy,spikes,r0,r1){
 </style>
 </head>
 <body onload="OnLoad()">
-	<div id= "instruction">
-		<h2 id = "ins1">Translate the following sentence to symbols using logic</h2></div>
-		<h2 id = "ins2">Try to keep the meaning of the sentence the same</h2>
+
+<div id = "game" align = left>
+<div id= "instruction">
+
+	<h2 id = "ins1">Translate the following sentence to symbols using logic</h2>
+	<h2 id = "ins2">Try to keep the meaning of the sentence the same</h2>
+	
+</div>
+	
+
+<div id = "content">
+<nav id="menu" align = right>
+	<div id = 'syms'><h2 id = "t1">Logic Symbols</h2></div>
+	<div align = center>
+	<div class="StartTarget">
+		<div class="Draggable" id = "s0" selectable="no" style="background-color: purple;" ></div></div>
+	<div class="StartTarget">
+		<div class="Draggable" id = "s1" selectable="no" style="background-color: brown;"></div></div>
+	<div class="StartTarget">
+		<div class="Draggable" id = "s2" selectable="no" style="background-color: blue;"></div></div>
+	<div class="StartTarget">
+		<div class="Draggable" id = "s3" selectable="no" style="background-color: indigo;"></div></div>
 	</div>
+</nav>
+<table align="center">
+	<tr>
+		<td><div class="StartTarget">
+			<div class="Draggable" id = "e0" selectable="no" style="background-color: Red;" ></div></div></td>
+		<td><div class="StartTarget">
+			<div class="Draggable" id = "e1" selectable="no" style="background-color: Yellow;"></div></div></td>
+		<td><div class="StartTarget">
+			<div class="Draggable" id = "e2" selectable="no" style="background-color: Green;"></div></div></td>
+		<td><div class="StartTarget">
+			<div class="Draggable" id = "e3" selectable="no" style="background-color: Pink;"></div></div></td>
+		<td><div class="StartTarget">
+			<div class="Draggable" id = "e4" selectable="no" style="background-color: Black;"></div></div></td>
+		<td><div class="StartTarget">
+			<div class="Draggable" id = "e5" selectable="no" style="background-color: Orange;"></div></div></td>
+		<td><div class="StartTarget">
+			<div class="Draggable" id = "e6" selectable="no" style="background-color: Gray;"></div></div></td>
+	</tr>
+</table>
+<h1 id = "gameSentence">"If Jason works hard, his son will go to college and his wife can buy lots of things"</h1>
 
-	<table align="center">
-		<tr>
-			<td>
-			<div class="StartTarget">
-				<div class="StarDraggable" selectable="no" style="background-color: Red;" ></div>
-			</div>
-			</td>
-			<td>
-			<div class="StartTarget">
-				<div class="Draggable" selectable="no" style="background-color: Yellow;"></div>
-			</div>
-			</td>
-			<td>
-			<div class="StartTarget">
-				<div class="Draggable" selectable="no" style="background-color: Green;"></div>
-			</div>
-			</td>
-			<td>
-			<div class="StartTarget">
-				<div class="Draggable" selectable="no" style="background-color: Pink;"></div>
-			</div>
-			</td>
-			<td>
-			<div class="StartTarget">
-				<div class="Draggable" selectable="no" style="background-color: Black;"></div>
-			</div>
-			</td>
-			<td>
-			<div class="StartTarget">
-				<div class="Draggable" selectable="no" style="background-color: Orange;"></div>
-			</div>
-			</td>
-			<td>
-			<div class="StartTarget">
-				<div class="Draggable" selectable="no" style="background-color: Gray;"></div>
-			</div>
-			</td>
-			</tr>
-		</table>
+<table id = boxes align="center">
+	<tr>
+		<td><div id = box0 class="DropTarget">
+			</div></td>
+		
+	</tr>
+</table>
 
-		<h1 id = "gameSentence">"If Jason works hard, his son will go to college and his wife can buy lots of things"</h1></div>
-
-		<table align="center">
-			<tr>
-				<td><div id = box1 class="DropTarget">
-				</div></td>
-				<td><div id = box2 class="DropTarget">
-				</div></td>
-				<td><div id = box3 class="DropTarget">
-				</div></td>
-				<td><div id = box4 class="DropTarget">
-				</div></td>
-				<td><div id = box5 class="DropTarget">
-				</div></td>
-				<td><div id = box6 class="DropTarget">
-				</div></td>
-				<td><div id = box7 class="DropTarget">
-				</div></td>
-			</tr>
-		</table>
-
-		<div id = "buttonHolder" align = right>
-			<br><a id = "game1elp" href="" class="blue button">Help</a></br>
-			<br><a id = "game1Undo"href="" class="blue button">Undo</a></br>
-		</div>
-
-		<div id="textDiv">Try to figure out!</div>
-
-	</br>
-
+<div id = "buttonHolder" align = left>
+	<br><a id = "game1elp" href="" class="blue button">Help</a></br>
+	<br><a id = "game1Undo"href="" class="blue button">Undo</a></br>
+</div>
+</div>
+<div id="textDiv">Try to figure out!</div>
+</br>
+</div>
 </body>
 </html>

@@ -1,0 +1,25 @@
+#instruction {
+text-align: center;
+border: 2px inset gray;
+}
+
+#ins1{
+text-align: center;
+}
+
+#ins2{
+text-align: center;
+}
+
+#gameSentence{
+text-align: center;
+}
+
+#content{
+text-align: center;
+border: 2px inset gray;
+}
+
+nav{
+	float: right;
+}
