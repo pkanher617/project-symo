@@ -1,0 +1,38 @@
+div {
+    text-align: center;
+    border: 2px inset gray;
+    background-coo
+}
+-ul{
+    -float: left	
+}
+
+section {
+    width: 90%;
+    height: 500px;
+    float: left;
+}
+
+nav {
+    width: 9%;
+    height: 300px;
+    float: left;
+}
+
+#gameBox{
+    width: 60vw;
+    height: 60vw;
+    margin: auto;
+    display: block;
+}
+
+#info{
+    width: 60vw;
+    margin: auto;
+    display: block;
+    border: 4px inset gray;
+}
+#info img{
+    float: left;
+    width: 100px;
+}
