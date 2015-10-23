@@ -1,19 +1,33 @@
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="compressed.button.css" />
+<link rel="stylesheet" href="game.css">
+
 <script src="http://www.html5canvastutorials.com/libraries/kinetic-v3.10.0.js"></script>
 <script type="text/javascript">
-
 var oDragTargets = [];
 var oDragTarget = null;
 var oDragItem = null;
 var iClickOffsetX = 0;
 var iClickOffsetY = 0;
 var INTERVAL = 20;
+var condition = [['red', 'Jason works hard'],
+				['orange', 'his son will go to college'],
+				['yellow', 'his wife can buy lots of things']];
+				
 
 function OnLoad(){
+	document.getElementById("ins1").style.font = "italic bold 20px arial,serif";
+	document.getElementById("ins2").style.font = "italic bold 20px arial,serif";
+	document.getElementById("t1").style.font = "italic bold 20px arial,serif";
+	document.getElementById("gameSentence").style.font = "italic bold 30px arial,serif";
+
+
+
+
+	//alert(condition[0][0]);
 	SetupDragDrop();
-	setInterval(draw, INTERVAL);
+	//appendColumn();
 }
 
 function SetupDragDrop(){
@@ -22,7 +36,7 @@ function SetupDragDrop(){
 	var oList = document.getElementsByTagName("div");
 	for(var i=0; i<oList.length; i++){
 		var o = oList[i];
-		if (o.className == "DropTarget"){
+		if (o.className == "DropTarget" || o.className == "StartTarget"){
 			oDragTargets[oDragTargets.length] = GetObjPos(o);
 		}else if (o.className == "Draggable"){
 			MakeDragable(o);
@@ -105,6 +119,8 @@ function HandleDragMove(x,y){
 		}
 	}
 	
+	
+	
 	if (oDragTarget){
 		OnTargetOut();
 		oDragTarget = null;
@@ -130,12 +146,76 @@ function DragStop(o,e){
 	HandleDragStop();
 }
 
+function checkWin(){
+	oDrop = [];
+	var oList = document.getElementsByTagName("div");
+	for(var i=0; i<oList.length; i++){
+		var o = oList[i];
+		if (o.className == "DropTarget"){
+			oDrop.push(o);
+		}
+	}
+	var ind = 0;
+	for(var i=0; i<oDrop.length; i++){
+		
+		if (oDrop[i].innerHTML == ''){
+			if (ind == 1){
+				ind = 2;
+			}
+			else{ind = 1;}
+		}
+		
+	}
+	if (ind == 1 && oDrop.length >= 6){
+		
+		if (oDrop[0].lastChild.id == "e0" &&
+			oDrop[1].lastChild.id == "e5" &&
+			oDrop[2].lastChild.id == 'e1'&&
+			oDrop[3].lastChild.id == 'e2'&&
+			oDrop[4].lastChild.id == 's2'){
+			alert("You Win!");}
+		
+	}
+}
+
+
+function checkAllFill(){
+	oDrop = [];
+	var oList = document.getElementsByTagName("div");
+	for(var i=0; i<oList.length; i++){
+		var o = oList[i];
+		if (o.className == "DropTarget"){
+			oDrop.push(o);
+		}
+	}
+	var ind = 0;
+	for(var i=0; i<oDrop.length; i++){
+		//alert(oDrop[i].innerHTML);
+		if (oDrop[i].innerHTML == ''){
+			ind = 1;
+		}
+		
+	}
+	if (ind == 0){
+		appendColumn();
+		SetupDragDrop();
+	}
+	
+}
+
+
 function HandleDragStop(){
+	
+		
 	if (oDragItem==null) return;
 
 	if (oDragTarget){
+	    
 		OnTargetOut();
 		OnTargetDrop();
+		
+		checkAllFill();
+		checkWin();
 		oDragTarget = null;
 	}
 	
@@ -171,6 +251,10 @@ function GetObjPos(obj){
 }
 
 //Drag and Drop Events
+function OnTargetOverO(){
+	oDragTarget.style.border = "10px solid white";	
+}
+
 function OnTargetOver(){
 	oDragTarget.style.border = "10px solid red";
 }
@@ -183,6 +267,19 @@ function OnTargetDrop(){
 	oDragItem.style.position="";
 	oDragTarget.appendChild(oDragItem);
 	if (navigator.platform=="iPad") MakeDragable(oDragItem);
+	
+	oDropTargets = [];
+	
+	var oList = document.getElementsByTagName("div");
+	for(var i=0; i<oList.length; i++){
+		var o = oList[i];
+		if (o.className == "DropTarget"){
+			oDropTargets.push(o);
+			
+		}
+	}
+	
+	
 }
 
 
@@ -220,6 +317,29 @@ function addStar(ctx,cx,cy,spikes,r0,r1){
  	ctx.closePath();
 } 
 
+var appender = 1;
+
+function appendColumn() {
+    var tbl = document.getElementById('boxes'), // table reference
+        i;
+    // open loop for each row and append cell
+    for (i = 0; i < tbl.rows.length; i++) {
+        createCell(tbl.rows[i].insertCell(tbl.rows[i].cells.length), tbl.rows[0].cells.length, 'DropTarget');
+		
+    }
+}
+
+
+function createCell(cell, text, style) {
+    
+    var div = document.createElement('div'); // create DIV element
+	div.id = 'box' + (text - 1);
+    //txt = document.createTextNode(text); // create text node
+    //div.appendChild(txt);                    // append text node to the DIV
+    div.setAttribute('class', style);        // set DIV class attribute
+    div.setAttribute('className', style);    // set DIV class attribute for IE (?!)
+    cell.appendChild(div);                   // append DIV to the table cell
+}
 
 
 </script>
@@ -243,39 +363,75 @@ function addStar(ctx,cx,cy,spikes,r0,r1){
 	border: 10px solid white;
 }
 
+.StartTarget{
+	width: 60px; 
+	height:60px; 
+	background-color: White;
+	border: 10px solid white;
+}
+
 </style>
 </head>
 <body onload="OnLoad()">
-<div id= "instruction">
-	<h2 id = "ins1">Translate the following sentence to symbols using logic</h2></div>
-	<h2 id = "ins2">Try to keep the meaning of the sentence the same</h2>
-</div>
 
-<table>
+<div id = "game" align = left>
+<div id= "instruction">
+
+	<h2 id = "ins1">Translate the following sentence to symbols using logic</h2>
+	<h2 id = "ins2">Try to keep the meaning of the sentence the same</h2>
+	
+</div>
+	
+
+<div id = "content">
+<nav id="menu" align = right>
+	<div id = 'syms'><h2 id = "t1">Logic Symbols</h2></div>
+	<div align = center>
+	<div class="StartTarget">
+		<div class="Draggable" id = "s0" selectable="no" style="background-color: purple;" ></div></div>
+	<div class="StartTarget">
+		<div class="Draggable" id = "s1" selectable="no" style="background-color: brown;"></div></div>
+	<div class="StartTarget">
+		<div class="Draggable" id = "s2" selectable="no" style="background-color: blue;"></div></div>
+	<div class="StartTarget">
+		<div class="Draggable" id = "s3" selectable="no" style="background-color: indigo;"></div></div>
+	</div>
+</nav>
+<table align="center">
 	<tr>
-		<td><div class="DropTarget"></div></td>
-		<td><div class="DropTarget"></div></td>
-		<td><div class="DropTarget"></div></td>
-		<td><div class="DropTarget"></div></td>
-		<td><div class="DropTarget"></div></td>
-		<td><div class="DropTarget"></div></td>
-		<td><div class="DropTarget"></div></td>
+		<td><div class="StartTarget">
+			<div class="Draggable" id = "e0" selectable="no" style="background-color: Red;" ></div></div></td>
+		<td><div class="StartTarget">
+			<div class="Draggable" id = "e1" selectable="no" style="background-color: Yellow;"></div></div></td>
+		<td><div class="StartTarget">
+			<div class="Draggable" id = "e2" selectable="no" style="background-color: Green;"></div></div></td>
+		<td><div class="StartTarget">
+			<div class="Draggable" id = "e3" selectable="no" style="background-color: Pink;"></div></div></td>
+		<td><div class="StartTarget">
+			<div class="Draggable" id = "e4" selectable="no" style="background-color: Black;"></div></div></td>
+		<td><div class="StartTarget">
+			<div class="Draggable" id = "e5" selectable="no" style="background-color: Orange;"></div></div></td>
+		<td><div class="StartTarget">
+			<div class="Draggable" id = "e6" selectable="no" style="background-color: Gray;"></div></div></td>
 	</tr>
 </table>
-<div id= "sentence">
-	<h2>"If Jason works hard, his son will go to college and his wife can buy lots of things"</h2></div>
+<h1 id = "gameSentence">"If Jason works hard, his son will go to college and his wife can buy lots of things"</h1>
+
+<table id = boxes align="center">
+	<tr>
+		<td><div id = box0 class="DropTarget">
+			</div></td>
+		
+	</tr>
+</table>
+
+<div id = "buttonHolder" align = left>
+	<br><a id = "game1elp" href="" class="blue button">Help</a></br>
+	<br><a id = "game1Undo"href="" class="blue button">Undo</a></br>
 </div>
-		<br><a href="" class="blue button">Help</a></br>
-		<br><a href="" class="blue button">Undo</a></br>
+</div>
+<div id="textDiv">Try to figure out!</div>
 </br>
-<div class="Draggable" selectable="no" style="background-color: Red;" ></div>
-<div class="Draggable" selectable="no" style="background-color: Yellow;"></div>
-<div class="Draggable" selectable="no" style="background-color: Green;"></div>
-<div class="Draggable" selectable="no" style="background-color: Pink;"></div>
-<div class="Draggable" selectable="no" style="background-color: Black;"></div>
-<div class="Draggable" selectable="no" style="background-color: Orange;"></div>
-<div class="Draggable" selectable="no" style="background-color: Gray;"></div>
-
-
+</div>
 </body>
 </html>
