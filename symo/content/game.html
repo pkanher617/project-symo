@@ -38,7 +38,7 @@ function SetupDragDrop(){
 		var o = oList[i];
 		if (o.className == "DropTarget" || o.className == "StartTarget"){
 			oDragTargets[oDragTargets.length] = GetObjPos(o);
-		}else if (o.className == "Draggable" || o.className == "StarDraggable"){
+		}else if (o.className == "Draggable" || o.className == "StarDraggable" || o.className == "TriangleDraggable" || o.className == "CloudDraggable" || o.className == "DiamondDraggable" || o.className == "DropletDraggable" || o.className == "EyeDraggable" || o.className == "HeartDraggable" || o.className == "HexagonDraggable" || o.className == "LightningDraggable" || o.className == "PentagonDraggable"){
 			MakeDragable(o);
 		}
 	}
