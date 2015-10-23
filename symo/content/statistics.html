@@ -6,10 +6,21 @@
     <link rel="stylesheet" href="landing.css">
     <link rel="stylesheet" href="compressed.button.css">
   </head>
-  
+  <script>
+  function setImage(url){
+    document.getElementById('statsImage').src = url;
+  }
+  </script>
   <body>
-    <div id="info"><h2><img src="symoIcon.png">Statistics:<br></h2><h3>View statistics here</h3><br>
-    <a href="statistics.html"><div class="blue button">Stat 1</div></a><br><br>
+    <div id="info">
+      <h2><img src="symoIcon.png">Statistics:<br>
+      </h2>
+      <h3>View statistics here</h3><br>
+      <img id="statsImage" src="mockTotalGameStats.png"><br>
+      <a onclick="setImage('mockGame1Stats.png')">
+      <div class="blue button">Stat 1</div></a><br><br>
+      <a onclick="setImage('mockTotalGameStats.png')">
+      <div class="blue button">Stat 2</div></a><br><br>
     </div>
   </body>
 </html>
