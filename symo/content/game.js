@@ -4,10 +4,39 @@ var oDragItem = null;
 var iClickOffsetX = 0;
 var iClickOffsetY = 0;
 var INTERVAL = 20;
-var condition = [['red', 'Jason works hard'],
-				['orange', 'his son will go to college'],
-				['yellow', 'his wife can buy lots of things']];
-				
+var numPrims = 7;
+var solution = [];
+var startTime = 0;
+var attempts = 0;
+var levelNumber = 0;
+
+function beginLevel() {
+    $.post("./beginLevel", {userID: 1337}, function (data) {
+        levelNumber = data.level;
+        var level = generateLevel(data);
+        for (var i = 0; i < numPrims; i++) {
+            $("#prim"+i).hide();
+        }
+        for (var i = 0; i < level.primitives.length; i++) {
+            $("#prim"+i).show();
+            $("#prim"+i).attr("title", level.primitives[i]);
+        }
+        solution = level.solution;
+        startTime = new Date().getTime();
+        attempts = 0;
+    });
+}
+
+function generateLevel(levelData) {
+    return {primitives: ["Jason works hard", "his son will go to college", "his wife can buy lots of things"], solution: ["pred_if", "prim0", "pred_and", "prim1", "prim2"]};
+}
+
+function endLevel() {
+    var endTime = new Date().getTime();
+    $.post("./endLevel", {userID: 1337, level: levelNumber, completed: true, timeTaken: (endTime-startTime)/1000, numTries: attempts}, function (data) {
+        location.reload();
+    });
+}
 
 function OnLoad(){
 	document.getElementById("ins1").style.font = "italic bold 20px arial,serif";
@@ -15,12 +44,14 @@ function OnLoad(){
 	document.getElementById("t1").style.font = "italic bold 20px arial,serif";
 	document.getElementById("gameSentence").style.font = "italic bold 30px arial,serif";
 
-
+    $("#game1Check").click(checkWin);
 
 
 	//alert(condition[0][0]);
 	SetupDragDrop();
 	//appendColumn();
+    
+    beginLevel();
 }
 
 function SetupDragDrop(){
@@ -148,27 +179,21 @@ function checkWin(){
 			oDrop.push(o);
 		}
 	}
-	var ind = 0;
-	for(var i=0; i<oDrop.length; i++){
-		
-		if (oDrop[i].innerHTML == ''){
-			if (ind == 1){
-				ind = 2;
-			}
-			else{ind = 1;}
-		}
-		
-	}
-	if (ind == 1 && oDrop.length >= 6){
-		
-		if (oDrop[0].lastChild.id == "pred_if" &&
-			oDrop[1].lastChild.id == "prim1" &&
-			oDrop[2].lastChild.id == 'pred_and'&&
-			oDrop[3].lastChild.id == 'prim2'&&
-			oDrop[4].lastChild.id == 'prim3'){
-			alert("You Are Winner!");}
-		
-	}
+    
+    var completed = true;
+    for (var i = 0; i < solution.length; i++) {
+        completed = completed && (oDrop[i].lastChild.id == solution[i]);
+    }
+    
+    attempts++;
+    
+    if (completed) {
+        alert("You're correct! Good job!");
+        endLevel();
+    }
+    else
+        alert("Sorry, that's wrong. Maybe try again?");
+
 }
 
 
@@ -208,7 +233,6 @@ function HandleDragStop(){
 		OnTargetDrop();
 		
 		checkAllFill();
-		checkWin();
 		oDragTarget = null;
 	}
 	
@@ -219,10 +243,6 @@ function HandleDragStop(){
 function TouchEnd(e){
 	e.target.innerHTML = "TouchEnd";
 	HandleDragStop();
-}
-
-function $(s){
-	return document.getElementById(s);
 }
 
 function GetObjPos(obj){

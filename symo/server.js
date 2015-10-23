@@ -3,6 +3,7 @@ dispatcher = require('./httpdispatcher');
 url = require("url"),
 path = require("path"),
 fs = require("fs");
+qs = require("querystring");
 
 PORT = process.argv[2] || 8888; 
 
