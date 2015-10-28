@@ -10,52 +10,11 @@ var INTERVAL = 20;
 
 var condition = {};
 condition.predList = [];
-
 condition.predList.push({
 		predName: "and",
 		color: "ff0000",
-        evaluation: function (stack) {
-            var arg1 = stack[stack.length-1];
-            var arg2 = stack[stack.length-2];
-            stack.splice(stack.length-2, 2, [arg1 && arg2]);
-        },
 		arity: 2,
 		image: "and.png"
-});
-
-condition.predList.push({
-		predName: "or",
-		color: "00ff00",
-        evaluation: function (stack) {
-            var arg1 = stack[stack.length-1];
-            var arg2 = stack[stack.length-2];
-            stack.splice(stack.length-2, 2, [arg1 || arg2]);
-        },
-		arity: 2,
-		image: "or.png"
-});
-
-condition.predList.push({
-		predName: "if",
-		color: "0000ff",
-        evaluation: function (stack) {
-            var arg1 = stack[stack.length-1];
-            var arg2 = stack[stack.length-2];
-            stack.splice(stack.length-2, 2, [(!arg1) || arg2]);
-        },
-		arity: 2,
-		image: "if.png"
-});
-
-condition.predList.push({
-		predName: "not",
-		color: "ffff00",
-        evaluation: function (stack) {
-            var arg1 = stack[stack.length-1];
-            stack.splice(stack.length-1, 1, [!arg1]);
-        },
-		arity: 1,
-		image: "not.png"
 });
 
 				
@@ -81,7 +40,6 @@ function SetupDragDrop(){
 			MakeDragable(o);
 		}
 	}
-	//alert(oDragTargets[0]);
 }
 
 function MakeDragable(oBox){
@@ -217,24 +175,12 @@ function checkWin(){
 		
 	}
 	if (ind == 1 && oDrop.length >= 6){
-    
-        var exp = [];
-    
-        for (var i=0; i<oDrop.length; i++){
 		
-            if (oDrop[i].innerHTML != ''){
-                var name = oDrop[i].lastChild.id;
-                if (name.substring(0,4) == "prim")
-                    exp.push(parseInt(name.substring(4)));
-                else
-                    exp.push(name.substring(5));
-            }
-            
-        }
-        
-        var exp2 = ["if", 1, "and", 2, 3];
-		
-		if (validateSolution(exp, exp2, condition)){
+		if (oDrop[0].lastChild.id == "pred_if" &&
+			oDrop[1].lastChild.id == "prim1" &&
+			oDrop[2].lastChild.id == 'pred_and'&&
+			oDrop[3].lastChild.id == 'prim2'&&
+			oDrop[4].lastChild.id == 'prim3'){
 			alert("You Are Winner!");}
 		
 	}
@@ -267,15 +213,15 @@ function checkAllFill(){
 
 function HandleDragStop(){
 	
-	if (oDragItem==null) return;
+	if (oDragItem==null||oDragTarget==null) return;
 
 	if (oDragTarget){
 	    
 		OnTargetOut();
 		OnTargetDrop();
 		
-		//checkAllFill();
 		checkWin();
+		if (oDragItem==null||oDragTarget==null) return;
 		oDragTarget = null;
 	}
 	
