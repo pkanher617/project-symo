@@ -4,39 +4,20 @@ var oDragItem = null;
 var iClickOffsetX = 0;
 var iClickOffsetY = 0;
 var INTERVAL = 20;
-var numPrims = 7;
-var solution = [];
-var startTime = 0;
-var attempts = 0;
-var levelNumber = 0;
 
-function beginLevel() {
-    $.post("./beginLevel", {userID: 1337}, function (data) {
-        levelNumber = data.level;
-        var level = generateLevel(data);
-        for (var i = 0; i < numPrims; i++) {
-            $("#prim"+i).hide();
-        }
-        for (var i = 0; i < level.primitives.length; i++) {
-            $("#prim"+i).show();
-            $("#prim"+i).attr("title", level.primitives[i]);
-        }
-        solution = level.solution;
-        startTime = new Date().getTime();
-        attempts = 0;
-    });
-}
 
-function generateLevel(levelData) {
-    return {primitives: ["Jason works hard", "his son will go to college", "his wife can buy lots of things"], solution: ["pred_if", "prim0", "pred_and", "prim1", "prim2"]};
-}
 
-function endLevel() {
-    var endTime = new Date().getTime();
-    $.post("./endLevel", {userID: 1337, level: levelNumber, completed: true, timeTaken: (endTime-startTime)/1000, numTries: attempts}, function (data) {
-        location.reload();
-    });
-}
+
+var condition = {};
+condition.predList = [];
+condition.predList.push({
+		predName: "and",
+		color: "ff0000",
+		arity: 2,
+		image: "and.png"
+});
+
+				
 
 function OnLoad(){
 	document.getElementById("ins1").style.font = "italic bold 20px arial,serif";
@@ -44,14 +25,7 @@ function OnLoad(){
 	document.getElementById("t1").style.font = "italic bold 20px arial,serif";
 	document.getElementById("gameSentence").style.font = "italic bold 30px arial,serif";
 
-    $("#game1Check").click(checkWin);
-
-
-	//alert(condition[0][0]);
 	SetupDragDrop();
-	//appendColumn();
-    
-    beginLevel();
 }
 
 function SetupDragDrop(){
@@ -60,12 +34,13 @@ function SetupDragDrop(){
 	var oList = document.getElementsByTagName("div");
 	for(var i=0; i<oList.length; i++){
 		var o = oList[i];
-		if (o.className == "DropTarget" || o.className == "StartTarget"){
+		if (o.className == "DropTarget" || o.className == "StartTarget" || o.className == 'primStartTarget'){
 			oDragTargets[oDragTargets.length] = GetObjPos(o);
-		}else if (o.className == "Draggable" || o.className == "StarDraggable" || o.className == "TriangleDraggable" || o.className == "CloudDraggable" || o.className == "DiamondDraggable" || o.className == "DropletDraggable" || o.className == "EyeDraggable" || o.className == "HeartDraggable" || o.className == "HexagonDraggable" || o.className == "LightningDraggable" || o.className == "PentagonDraggable"){
+		}else if (o.className.indexOf("Draggable") > -1){
 			MakeDragable(o);
 		}
 	}
+	//alert(oDragTargets[0]);
 }
 
 function MakeDragable(oBox){
@@ -81,12 +56,14 @@ function MakeDragable(oBox){
 }
 
 function TouchStart(e){
+	
 	var oPos = GetObjPos(e.target);
 	iClickOffsetX = e.targetTouches[0].pageX - oPos.x;
 	iClickOffsetY = e.targetTouches[0].pageY - oPos.y;
 }
 
 function DragStart(o,e){
+	
 	if(!e) var e = window.event;
 	oDragItem = o;
 	
@@ -132,6 +109,13 @@ function HandleDragMove(x,y){
 		left=x;
 		top=y;
 	}
+
+	if (oDragItem.parentNode.className.indexOf("DropTarget") > -1){
+		oDragItem.parentNode.removeChild(oDragItem);
+		oDragItem = null;
+		return;
+	}
+	
 	
 	for (var i=0; i< oDragTargets.length; i++){
 		var oTarget = oDragTargets[i];
@@ -160,6 +144,7 @@ function TouchMove(e){
 }
 
 function DragStop(o,e){
+	if (o == null) return;
 	if (o.releaseCapture){
 		o.releaseCapture();
 	}else if (oDragItem){
@@ -179,21 +164,27 @@ function checkWin(){
 			oDrop.push(o);
 		}
 	}
-    
-    var completed = true;
-    for (var i = 0; i < solution.length; i++) {
-        completed = completed && (oDrop[i].lastChild.id == solution[i]);
-    }
-    
-    attempts++;
-    
-    if (completed) {
-        alert("You're correct! Good job!");
-        endLevel();
-    }
-    else
-        alert("Sorry, that's wrong. Maybe try again?");
-
+	var ind = 0;
+	for(var i=0; i<oDrop.length; i++){
+		
+		if (oDrop[i].innerHTML == ''){
+			if (ind == 1){
+				ind = 2;
+			}
+			else{ind = 1;}
+		}
+		
+	}
+	if (ind == 1 && oDrop.length >= 6){
+		
+		if (oDrop[0].lastChild.id == "pred_if" &&
+			oDrop[1].lastChild.id == "prim1" &&
+			oDrop[2].lastChild.id == 'pred_and'&&
+			oDrop[3].lastChild.id == 'prim2'&&
+			oDrop[4].lastChild.id == 'prim3'){
+			alert("You Are Winner!");}
+		
+	}
 }
 
 
@@ -208,7 +199,6 @@ function checkAllFill(){
 	}
 	var ind = 0;
 	for(var i=0; i<oDrop.length; i++){
-		//alert(oDrop[i].innerHTML);
 		if (oDrop[i].innerHTML == ''){
 			ind = 1;
 		}
@@ -224,7 +214,6 @@ function checkAllFill(){
 
 function HandleDragStop(){
 	
-		
 	if (oDragItem==null) return;
 
 	if (oDragTarget){
@@ -232,7 +221,8 @@ function HandleDragStop(){
 		OnTargetOut();
 		OnTargetDrop();
 		
-		checkAllFill();
+		//checkAllFill();
+		checkWin();
 		oDragTarget = null;
 	}
 	
@@ -243,6 +233,10 @@ function HandleDragStop(){
 function TouchEnd(e){
 	e.target.innerHTML = "TouchEnd";
 	HandleDragStop();
+}
+
+function $(s){
+	return document.getElementById(s);
 }
 
 function GetObjPos(obj){
@@ -277,8 +271,39 @@ function OnTargetOut(){
 }
 
 function OnTargetDrop(){
+	
 	oDragItem.style.position="";
-	oDragTarget.appendChild(oDragItem);
+	
+	if (oDragItem.parentNode.className.indexOf("DropTarget") <= -1){
+		var n = 0;
+		var e = false;
+		for (oo in condition.predList){
+			var object = condition.predList[oo];
+			if (oDragItem.className.indexOf(object.predName) > -1){
+				n = object.arity;
+				e = true;
+			}
+			
+		}
+		if (!e) {
+			return;
+		}
+		for (i = 0; i < n; i++){
+			ntd = document.createElement("td");
+			temp = oDragTarget.cloneNode();
+			ntd.appendChild(temp);
+			oDragTarget.parentNode.parentNode.insertBefore(ntd,oDragTarget.parentNode.nextSibling);
+			SetupDragDrop();
+		}
+		temp = oDragItem.cloneNode();
+		oDragTarget.appendChild(temp);
+		
+	}
+	else{
+		oDragItem.parentNode.removeChild(oDragItem);
+	}
+		
+	
 	if (navigator.platform=="iPad") MakeDragable(oDragItem);
 	
 	oDropTargets = [];
@@ -292,7 +317,8 @@ function OnTargetDrop(){
 		}
 	}
 	
-	
+	oDragItem = null;
+	oDragTarget = null;
 }
 
 
