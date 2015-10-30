@@ -4,6 +4,8 @@ var oDragItem = null;
 var iClickOffsetX = 0;
 var iClickOffsetY = 0;
 var INTERVAL = 20;
+var glob = 0;
+var indexRec = 0
 
 
 
@@ -110,11 +112,24 @@ function HandleDragMove(x,y){
 	}
 
 	if (oDragItem.parentNode.className.indexOf("DropTarget") > -1){
+		var first = oDragItem.parentNode.parentNode.cellIndex;
+		glob = first;
+		indexRec = 1;
+		
+		
+		CountRemoveIndex();
+		alert(glob);
+		deleteBoxes(first, glob - 1);
+		glob = 0;
+		
 		oDragItem.parentNode.removeChild(oDragItem);
+		
+		
 		oDragItem = null;
 		return;
+		
+		
 	}
-	
 	
 	for (var i=0; i< oDragTargets.length; i++){
 		var oTarget = oDragTargets[i];
@@ -133,6 +148,49 @@ function HandleDragMove(x,y){
 		oDragTarget = null;
 	}
 }
+
+
+
+function deleteBoxes(startIndex, endIndex){
+	var row = document.getElementById("rowlist");
+	for (var i = endIndex; i > startIndex; i--){
+		row.deleteCell(i);
+	}
+	SetupDragDrop();
+}
+
+function CountArgs(){
+	numOfArgs = 0;
+	if (oDragItem.parentNode.parentNode.parentNode.cells[glob].childNodes[0].innerHTML == ""){
+		return 0;
+	}
+	for (oo in condition.predList){
+		var object = condition.predList[oo];
+		if (oDragItem.parentNode.parentNode.parentNode.cells[glob].childNodes[0].childNodes[0].className.indexOf(object.predName) > -1){
+			numOfArgs = object.arity;
+		}		
+	}
+	return numOfArgs;
+}
+
+
+function CountRemoveIndex(){
+	var condToDetectEmpty;
+	var currentObject;
+	var detectClassName;
+
+	while (indexRec > 0){
+		indexRec = indexRec - 1;
+		if (oDragItem.parentNode.parentNode.parentNode.cells[glob].childNodes[0].innerHTML == ""){
+			glob = glob + 1;
+		}
+		else{
+			indexRec = indexRec + CountArgs();
+			glob = glob + 1;
+		}
+	}
+}
+
 
 function TouchMove(e){
     e.preventDefault();
@@ -276,6 +334,7 @@ function OnTargetDrop(){
 	if (oDragItem.parentNode.className.indexOf("DropTarget") <= -1){
 		var n = 0;
 		var e = false;
+		
 		for (oo in condition.predList){
 			var object = condition.predList[oo];
 			if (oDragItem.className.indexOf(object.predName) > -1){
@@ -290,8 +349,10 @@ function OnTargetDrop(){
 		for (i = 0; i < n; i++){
 			ntd = document.createElement("td");
 			temp = oDragTarget.cloneNode();
+			
 			ntd.appendChild(temp);
 			oDragTarget.parentNode.parentNode.insertBefore(ntd,oDragTarget.parentNode.nextSibling);
+			oDragTarget.innerHTML = "";
 			SetupDragDrop();
 		}
 		temp = oDragItem.cloneNode();
@@ -300,6 +361,7 @@ function OnTargetDrop(){
 	}
 	else{
 		oDragItem.parentNode.removeChild(oDragItem);
+		
 	}
 		
 	
@@ -318,6 +380,7 @@ function OnTargetDrop(){
 	
 	oDragItem = null;
 	oDragTarget = null;
+	SetupDragDrop();
 }
 
 
