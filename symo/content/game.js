@@ -118,7 +118,7 @@ function HandleDragMove(x,y){
 		
 		
 		CountRemoveIndex();
-		alert(glob);
+		//alert(glob);
 		deleteBoxes(first, glob - 1);
 		glob = 0;
 		
