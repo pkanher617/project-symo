@@ -1,0 +1,37 @@
+install mysql
+
+use   mysql.server start   to connect to database
+
+CREATE DATABASE symo;
+
+use symo;
+
+CREATE TABLE IF NOT EXISTS User (
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    nickname VARCHAR(255) NOT NULL,
+    cookie VARCHAR(255) NOT NULL,
+    difficulty INT DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS Game (
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    question VARCHAR(255) NOT NULL,
+    solution VARCHAR(255) NOT NULL,
+    hint VARCHAR(255),
+    difficulty INT NOT NULL, 
+    levels INT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS History (
+    history_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, 
+    user_id INT NOT NULL,
+    game_id INT NOT NULL,
+    times INT,
+    attempts INT,
+    FOREIGN KEY (user_id) 
+        REFERENCES User(id),
+    FOREIGN KEY (game_id)
+        REFERENCES Game(id)
+)

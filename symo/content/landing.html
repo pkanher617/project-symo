@@ -10,7 +10,10 @@
   href="symoIcon.png">
   <script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
   <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+  <script src="js.cookie.js"></script>
+  <script src="jquery.cookie.js"></script>
   <script src="landing.js"></script>
+  <link rel="stylesheet" href="form.css">
   <script>
   function setURL(url){
     document.getElementById('gamePanel').src = url;
@@ -18,6 +21,42 @@
   </script>
 </head>
 <body>
+  <div id="header">
+        <label id="welcome" hidden></label>
+        <button id="login">Log In</button>
+        <button id="register">Register</button>
+        <div>
+            <form id="registerform" class="form" hidden>
+                <div class="form_text">
+                    <img id="closereg" src="close2.png" class="dimpic" /> Username:
+                    <input type="text" id="signup_username" value="">
+                    <br />
+                    <br /> Nickname:
+                    <input type="text" id="signup_nickname" value="">
+                    <br />
+                    <br /> Password:
+                    <input type="password" id="signup_password" value="">
+                    <br />
+                    <br /> Re-type Password:
+                    <input type="password" id="signup_password2" value="">
+                    <br />
+                    <br />
+                    <button id="register-confirm" class="small_button">Register</button>
+                </div>
+            </form>
+            <form id="loginform" class="form" hidden>
+                <div class="form_text">
+                    <img id="closelog" src="close2.png" class="dimpic" /> Username:
+                    <input type="text" id="login_username" value="">
+                    <br />
+                    <br /> Password:
+                    <input type="password" id="login_password" value="">
+                    <br /><br /><br /><br /><br /><br />
+                    <button id="login-confirm" class="small_button">Log in</button>
+                </div>
+            </form>
+        </div>
+    </div>
   <div ng-app="">
     <div id="upper"><h1 id="ttl"><img src="symoIcon.png"> Symo</h1>
       <h2 id="sttl">The Logical Way to Train Your Mind</h2>

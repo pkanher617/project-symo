@@ -4,6 +4,8 @@ url = require("url"),
 path = require("path"),
 fs = require("fs");
 qs = require("querystring");
+var uuid = require("uuid");
+var passwordHash = require('password-hash');
 
 PORT = process.argv[2] || 8888; 
 
@@ -131,6 +133,84 @@ dispatcher.onGet("/landing.html", function(req, res) {
     res.end();
 });    
 
+dispatcher.onPost("/user/register", function(req, res) {
+    var body = req.body;
+    var data = qs.parse(body);
+    var username = '1';
+    var nickname = '2';
+    var password = '3';
+    // var username = data.Username;
+    // var nickname = data.Nickname;
+    // var hashedPassword = passwordHash.generate(qs.parse(data.Password));
+    var cookie = uuid.v1();
+    var cookies = Cookies(req,res);
+
+    connection.query('SELECT * FROM `User` WHERE `username` = ?', [username], function(err, rows, fields) {
+        var userExists = false;
+        if (rows.length != 0) {
+            userExists = true;
+        } else {
+            console.log("Can register!");
+            connection.query('INSERT INTO `User` SET ?', {
+                username: username,
+                nickname: nickname,
+                password: password,
+                cookie: cookie
+            }, function(err, result) {
+                if (err) console.log(err);
+                var id = result.insertId;
+                // res.setCookie('token',cookie);
+                // res.setHeader("Set-Cookie", ["token=cookie", "language=javascript"]);
+                res.addCookie(new Cookie("token",cookie));
+                // cookies.set('token', cookie);
+                // cookies.set('name', username);
+                // cookies.set('id', id);
+            });
+        }
+        if (userExists) {
+            res.writeHead(200, {
+                "Content-Type": "text/plain"
+            });
+            res.end('User already exists');
+        } else {
+            res.writeHead(200, {
+                'Content-Type': 'text/html',
+            });
+            res.end('ok');
+        }
+    });
+
+});
+
+dispatcher.onPost("/user/login", function(req, res) {
+    var data = qs.parse(req.body);
+    var username = data.Username;
+    var password = data.Password;
+
+    connection.query('SELECT * FROM `User` WHERE `username` = ?', [username], function(err, rows, fields) {
+        if (rows.length == 0) {
+            res.writeHead(200, {
+                "Content-Type": "text/plain"
+            });
+
+            res.end('User does not exist');
+        } else {
+            if (passwordHash.verify(password, rows[0].password)) {
+                res.writeHead(200, {
+                    'Content-Type': 'text/html',
+                });
+                res.end('ok');
+            } else {
+                res.writeHead(200, {
+                    "Content-Type": "text/plain"
+                });
+                res.end('Password is not correct');
+            }
+        }
+    })
+
+})
+
 
 dispatcher.onPost("/post1", function(req, res) {//this is included to show the onPost method in use
     //anything in here works just like it would in onGet
@@ -186,6 +266,17 @@ function dbRecordLevelStats(userID, level, completed, timeTaken, numTries) {
 
 var server = http.createServer(handleRequest);
 
+
+var mysql = require('mysql');
+var connection = mysql.createConnection({
+    host: '127.0.0.1',
+    port: 3307,
+    user: 'root',
+    password: '',
+    database: 'symo'
+});
+
+connection.connect();
 
 server.listen(PORT, function(){
     console.log("Server listening on: http://localhost:%s", PORT);
