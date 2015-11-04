@@ -12,11 +12,52 @@ var indexRec = 0
 
 var condition = {};
 condition.predList = [];
+
 condition.predList.push({
 		predName: "and",
 		color: "ff0000",
+        evaluation: function (stack) {
+            var arg1 = stack[stack.length-1];
+            var arg2 = stack[stack.length-2];
+            stack.splice(stack.length-2, 2, arg1 && arg2);
+        },
 		arity: 2,
 		image: "and.png"
+});
+
+condition.predList.push({
+		predName: "or",
+		color: "00ff00",
+        evaluation: function (stack) {
+            var arg1 = stack[stack.length-1];
+            var arg2 = stack[stack.length-2];
+            stack.splice(stack.length-2, 2, arg1 || arg2);
+        },
+		arity: 2,
+		image: "or.png"
+});
+
+condition.predList.push({
+		predName: "if",
+		color: "0000ff",
+        evaluation: function (stack) {
+            var arg1 = stack[stack.length-1];
+            var arg2 = stack[stack.length-2];
+            stack.splice(stack.length-2, 2, (!arg1) || arg2);
+        },
+		arity: 2,
+		image: "if.png"
+});
+
+condition.predList.push({
+		predName: "not",
+		color: "ffff00",
+        evaluation: function (stack) {
+            var arg1 = stack[stack.length-1];
+            stack.splice(stack.length-1, 1, !arg1);
+        },
+		arity: 1,
+		image: "not.png"
 });
 
 				
@@ -296,6 +337,7 @@ function $(s){
 	return document.getElementById(s);
 }
 
+
 function GetObjPos(obj){
 	var x = 0;
 	var y = 0;
@@ -441,3 +483,4 @@ function createCell(cell, text, style) {
     div.setAttribute('className', style);    // set DIV class attribute for IE (?!)
     cell.appendChild(div);                   // append DIV to the table cell
 }
+

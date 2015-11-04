@@ -8,7 +8,7 @@
 <script src="validation.js"></script>
 <script src="game.js"></script>
 </head>
-<body onload="OnLoad()">
+<body onload="OnLoad()" onresize = "SetupDragDrop()">
 
 <div id = "game" align = left>
 <div id= "instruction">
@@ -26,11 +26,11 @@
 	<div class="StartTarget">
 		<div class="StarDraggable and" title="AND" id = "pred_and" selectable="no" ></div></div>
 	<div class="StartTarget">
-		<div class="CloudDraggable" title="OR" id = "pred_or" selectable="no"></div></div>
+		<div class="CloudDraggable or" title="OR" id = "pred_or" selectable="no"></div></div>
 	<div class="StartTarget">
-		<div class="DiamondDraggable" title="NOT" id = "pred_not" selectable="no" ></div></div>
+		<div class="DiamondDraggable not" title="NOT" id = "pred_not" selectable="no" ></div></div>
 	<div class="StartTarget">
-		<div class="DropletDraggable" title="IF" id = "pred_if" selectable="no" ></div></div>
+		<div class="DropletDraggable if" title="IF" id = "pred_if" selectable="no" ></div></div>
 	</div>
 </nav>
 <table align="center">
