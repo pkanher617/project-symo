@@ -1,0 +1,19 @@
+<html>
+<head>
+
+<script src="game2.js"></script>
+</head>
+<body onload="OnLoad()">
+<script>
+
+function enterCmd() {
+    var cmd = document.getElementById("cmdEntry").value;
+    executeCommand(cmd);
+    document.getElementById("cmdEntry").value = "";
+}
+
+</script>
+<textarea id="statementList" rows=30 cols=150></textarea><br />
+<input type="text" id="cmdEntry" size=150 onKeyDown="if (event.keyCode == 13) enterCmd();" />
+</body>
+</html>
