@@ -1,31 +1,37 @@
 $(document).ready(function() {
 
-
-	if ($.cookie('token')) {
-		console.log($.cookie());
-		$('#login').hide();
+	if ($.cookie('name')) {
+		$('#login').html("Log Out");
 		$('#register').hide();
 		$('#welcome').show();
-		$('#welcome').html("Welcome, " + Cookies.get('name'));
+		$('#welcome').html("Welcome, " + $.cookie('name'));
 	}
-	// if (Cookies.get('name')){
-	// 	console.log($.cookie());
-	// }
-
-	// console.log(Cookies.get());
 
 	$("#login").click(function() {
-		$("#loginform").show();
-		$("#loginform").addClass("front");
-		$('#login').disabled = true;
-		$('#register').disabled = true;
+		if ($('#login').html() === "Log Out") {
+			$.ajax({
+				type: 'POST',
+				url: "/user/logout",
+				success: function(data) {
+					$.removeCookie('name');
+					$.removeCookie('token');
+					$('#register').show();
+					$('#login').html("Log In");
+					$('#welcome').hide();
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					alert("Server got errors");
+				}
+			});
+		} else {
+			$("#loginform").show();
+			$("#loginform").addClass("front");
+		}
 	});
 
 	$("#register").click(function() {
 		$("#registerform").show();
 		$("#registerform").addClass("front");
-		$('#login').disabled = true;
-		$('#register').disabled = true;
 	});
 
 	$('#closereg').click(function() {
@@ -45,29 +51,34 @@ $(document).ready(function() {
 		var password2 = $('#signup_password2').val();
 
 		if (password === password2) {
-			var data = {
-				Username: username,
-				Password: password,
-				Nickname: nickname
-			};
 			$.ajax({
 				type: 'POST',
 				url: "/user/register",
-				data: JSON.stringfy(data),
+				data: {
+					Username: username,
+					Password: password,
+					Nickname: nickname
+				},
+				timeout: 1000,
+				datatype: 'json',
 				success: function(data) {
-					if (data !== "ok") {
-						alert(data);
+					var result = jQuery.parseJSON(data);
+					if (result.success) {
+						alert("success!");
+						$.cookie('name', nickname);
+						$.cookie('token', result.cookie);
+						$("#registerform").hide();
+						$("#registerform").removeClass("front")
+						$('#register').hide();
+						$('#login').html("Log Out");
+						$('#welcome').show();
+						$('#welcome').html("Welcome, " + nickname);
 					} else {
-						console.log('success');
-						alert('success!');
-						$('#login').addClass('hidden');
-						$('#register').addClass('hidden');
-						$('#welcome').removeClass('hidden');
-						$('#welcome').html("Welcome, " + username);
+						alert(result.error);
 					}
 				},
-				error: function(xhr, status, error) {
-					alert("Register failed");
+				error: function(jqXHR, textStatus, errorThrown) {
+					alert("Server got errors");
 				}
 			});
 		} else {
@@ -86,20 +97,22 @@ $(document).ready(function() {
 				Password: password
 			},
 			success: function(data) {
-				if (data !== 'ok') {
-					console.log(data);
-					alert(data);
+				var result = jQuery.parseJSON(data);
+				if (result.success) {
+					$.cookie('name', result.nickname);
+					$.cookie('token', result.cookie);
+					$("#loginform").hide();
+					$("#loginform").removeClass("front")
+					$('#register').hide();
+					$('#login').html("Log Out");
+					$('#welcome').show();
+					$('#welcome').html("Welcome, " + result.nickname);
 				} else {
-					console.log('success');
-					alert('success!');
-					$('#login').addClass('hidden');
-					$('#register').addClass('hidden');
-					$('#welcome').removeClass('hidden');
-					$('#welcome').html("Welcome, " + username);
+					alert(result.error);
 				}
 			},
-			error: function(xhr, status, error) {
-				alert(error);
+			error: function(jqXHR, textStatus, errorThrown) {
+				alert("Server got errors");
 			}
 		});
 	});
