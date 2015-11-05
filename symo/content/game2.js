@@ -49,7 +49,37 @@ condition.predList.push({
 		image: "not.png"
 });
 
+condition.predList.push({
+		predName: "T",
+		color: "cccccc",
+        evaluation: function (stack) {
+            stack.push(1);
+        },
+		arity: 0,
+		image: "T.png"
+});
+
+condition.predList.push({
+		predName: "F",
+		color: "333333",
+        evaluation: function (stack) {
+            stack.push(0);
+        },
+		arity: 0,
+		image: "F.png"
+});
+
 condition.axiomList = [];
+
+condition.axiomList.push({
+        name: "noncont",
+        axiom: ["not", "and", 1, "not", 1]
+});
+
+condition.axiomList.push({
+        name: "excl_mid",
+        axiom: ["or", 1, "not", 1]
+});
 
 condition.axiomList.push({
         name: "and_or",
@@ -61,6 +91,26 @@ condition.axiomList.push({
         axiom: ["if", "and", "if", 1, 2, "if", 2, 3, "if", 1, 3]
 });
 
+condition.axiomList.push({
+        name: "if_conj",
+        axiom: ["if", "and", "if", 1, 2, "if", 1, 3, "if", 1, "and", 2, 3]
+});
+
+condition.axiomList.push({
+        name: "cases",
+        axiom: ["if", "and", "if", 1, 3, "if", 2, 3, "if", "or", 1, 2, 3]
+});
+
+condition.axiomList.push({
+        name: "true",
+        axiom: ["T"]
+});
+
+condition.axiomList.push({
+        name: "or_true",
+        axiom: ["or", 1, "T"]
+});
+
 condition.equivalenceList = [];
 
 condition.equivalenceList.push({
@@ -69,8 +119,178 @@ condition.equivalenceList.push({
 });
 
 condition.equivalenceList.push({
+        name: "assoc_and",
+        rule: [["and", 1, "and", 2, 3], ["and", "and", 1, 2, 3]]
+});
+
+condition.equivalenceList.push({
+        name: "assoc_and2",
+        rule: [["and", "and", 1, 2, 3], ["and", 1, "and", 2, 3]]
+});
+
+condition.equivalenceList.push({
+        name: "ident_and",
+        rule: [["and", 1, "T"], [1]]
+});
+
+condition.equivalenceList.push({
+        name: "ident_and2",
+        rule: [[1], ["and", 1, "T"]]
+});
+
+condition.equivalenceList.push({
+        name: "absorb_and",
+        rule: [["and", 1, "F"], ["F"]]
+});
+
+condition.equivalenceList.push({
+        name: "idemp_and",
+        rule: [["and", 1, 1], [1]]
+});
+
+condition.equivalenceList.push({
+        name: "idemp_and2",
+        rule: [[1], ["and", 1, 1]]
+});
+
+condition.equivalenceList.push({
+        name: "comm_or",
+        rule: [["or", 1, 2], ["or", 2, 1]]
+});
+
+condition.equivalenceList.push({
+        name: "assoc_or",
+        rule: [["or", 1, "or", 2, 3], ["or", "or", 1, 2, 3]]
+});
+
+condition.equivalenceList.push({
+        name: "assoc_or2",
+        rule: [["or", "or", 1, 2, 3], ["or", 1, "or", 2, 3]]
+});
+
+condition.equivalenceList.push({
+        name: "ident_or",
+        rule: [["or", 1, "F"], [1]]
+});
+
+condition.equivalenceList.push({
+        name: "ident_or2",
+        rule: [[1], ["or", 1, "F"]]
+});
+
+condition.equivalenceList.push({
+        name: "absorb_or",
+        rule: [["or", 1, "T"], ["T"]]
+});
+
+condition.equivalenceList.push({
+        name: "idemp_or",
+        rule: [["or", 1, 1], [1]]
+});
+
+condition.equivalenceList.push({
+        name: "idemp_or2",
+        rule: [[1], ["or", 1, 1]]
+});
+
+condition.equivalenceList.push({
+        name: "dist_and_or",
+        rule: [["and", 1, "or", 2, 3], ["or", "and", 1, 2, "and", 1, 3]]
+});
+
+condition.equivalenceList.push({
+        name: "dist_and_or2",
+        rule: [["or", "and", 1, 2, "and", 1, 3], ["and", 1, "or", 2, 3]]
+});
+
+condition.equivalenceList.push({
+        name: "dist_or_and",
+        rule: [["or", 1, "and", 2, 3], ["and", "or", 1, 2, "or", 1, 3]]
+});
+
+condition.equivalenceList.push({
+        name: "dist_or_and2",
+        rule: [["and", "or", 1, 2, "or", 1, 3], ["or", 1, "and", 2, 3]]
+});
+
+condition.equivalenceList.push({
+        name: "dbl_neg",
+        rule: [["not", "not", 1], [1]]
+});
+
+condition.equivalenceList.push({
+        name: "dbl_neg2",
+        rule: [[1], ["not", "not", 1]]
+});
+
+condition.equivalenceList.push({
+        name: "demorg_and",
+        rule: [["and", "not", 1, "not", 2], ["not", "or", 1, 2]]
+});
+
+condition.equivalenceList.push({
+        name: "demorg_and2",
+        rule: [["not", "or", 1, 2], ["and", "not", 1, "not", 2]]
+});
+
+condition.equivalenceList.push({
+        name: "demorg_or",
+        rule: [["or", "not", 1, "not", 2], ["not", "and", 1, 2]]
+});
+
+condition.equivalenceList.push({
+        name: "demorg_or2",
+        rule: [["not", "and", 1, 2], ["or", "not", 1, "not", 2]]
+});
+
+condition.equivalenceList.push({
         name: "if_or",
         rule: [["if", 1, 2], ["or", "not", 1, 2]]
+});
+
+condition.equivalenceList.push({
+        name: "or_if",
+        rule: [["or", 1, 2], ["if", "not", 1, 2]]
+});
+
+condition.equivalenceList.push({
+        name: "contrapos",
+        rule: [["if", 1, 2], ["if", "not", 2, "not", 1]]
+});
+
+condition.equivalenceList.push({
+        name: "contrapos2",
+        rule: [["if", "not", 2, "not", 1], ["if", 1, 2]]
+});
+
+condition.equivalenceList.push({
+        name: "ponens",
+        rule: [["if", "T", 1], [1]]
+});
+
+condition.equivalenceList.push({
+        name: "ponens2",
+        rule: [[1], ["if", "T", 1]]
+});
+
+condition.equivalenceList.push({
+        name: "contra",
+        rule: [["if", 1, "F"], ["not", 1]]
+});
+
+condition.equivalenceList.push({
+        name: "contra2",
+        rule: [["not", 1], ["if", 1, "F"]]
+});
+
+condition.equivalenceList.push({
+        name: "true_false",
+        rule: [["T"], ["not", "F"]]
+});
+
+condition.equivalenceList.push({
+        name: "true_false2",
+        rule: [["F"], ["not", "T"]]
 });
 
 function equals(array1, array2) {
@@ -213,11 +433,33 @@ function rewrite(statement, index, equivalence) {
     return presub.concat(newSubtree).concat(postsub);
 }
 
+function verify(statement, index, evidence) {
+    var subtree = getSubtree(statement, index);
+    var presub = statement.slice(0, index);
+    var postsub = statement.slice(index + subtree.length);
+    
+    if (!equals(subtree, evidence))
+        return false;
+    
+    return presub.concat(["T"]).concat(postsub);
+}
+
+function tautology(statement, index, evidence) {
+    var subtree = getSubtree(statement, index);
+    var presub = statement.slice(0, index);
+    var postsub = statement.slice(index + subtree.length);
+    
+    if (!equals(subtree, ["T"]))
+        return false;
+    
+    return presub.concat(evidence).concat(postsub);
+}
+
 allStatements = [];
 
-function addStatement(statement) {
+function addStatement(cmd, statement) {
     allStatements.push(statement);
-    document.getElementById("statementList").innerHTML += (allStatements.length + ". " + toString(statement) + "\n");
+    document.getElementById("statementList").innerHTML += ("\t\t(" + cmd + ")\n" + allStatements.length + ". " + toString(statement) + "\n");
 }
 
 function executeCommand(cmdStr) {
@@ -228,7 +470,7 @@ function executeCommand(cmdStr) {
     
     switch (cmd[0]) {
     case "premise":
-        addStatement(cmd.slice(1));
+        addStatement(cmdStr, cmd.slice(1));
         return true;
     case "ponens":
         if (cmd.length < 3)
@@ -240,7 +482,7 @@ function executeCommand(cmdStr) {
         var res = ponens(allStatements[cmd[1]-1], allStatements[cmd[2]-1]);
         if (!res)
             return false;
-        addStatement(res);
+        addStatement(cmdStr, res);
         return true;
     case "conjoin":
         if (cmd.length < 3)
@@ -249,7 +491,7 @@ function executeCommand(cmdStr) {
             return false;
         if (cmd[2] < 1 || allStatements.length < cmd[2])
             return false;
-        addStatement(conjoin(allStatements[cmd[1]-1], allStatements[cmd[2]-1]));
+        addStatement(cmdStr, conjoin(allStatements[cmd[1]-1], allStatements[cmd[2]-1]));
         return true;
     case "specify":
         if (cmd.length < 3)
@@ -266,7 +508,7 @@ function executeCommand(cmdStr) {
         var res = specify(axiom, statements);
         if (!res)
             return false;
-        addStatement(res);
+        addStatement(cmdStr, res);
         return true;
     case "rewrite":
         if (cmd.length < 4)
@@ -284,7 +526,31 @@ function executeCommand(cmdStr) {
         var res = rewrite(allStatements[cmd[1]-1], cmd[2], rule);
         if (!res)
             return false;
-        addStatement(res);
+        addStatement(cmdStr, res);
+        return true;
+    case "verify":
+        if (cmd.length < 4)
+            return false;
+        if (cmd[1] < 1 || allStatements.length < cmd[1])
+            return false;
+        if (cmd[3] < 1 || allStatements.length < cmd[3])
+            return false;
+        var res = verify(allStatements[cmd[1]-1], cmd[2], allStatements[cmd[3]-1]);
+        if (!res)
+            return false;
+        addStatement(cmdStr, res);
+        return true;
+    case "tautology":
+        if (cmd.length < 4)
+            return false;
+        if (cmd[1] < 1 || allStatements.length < cmd[1])
+            return false;
+        if (cmd[3] < 1 || allStatements.length < cmd[3])
+            return false;
+        var res = tautology(allStatements[cmd[1]-1], cmd[2], allStatements[cmd[3]-1]);
+        if (!res)
+            return false;
+        addStatement(cmdStr, res);
         return true;
     default:
         return false;
