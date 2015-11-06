@@ -97,6 +97,21 @@ condition.axiomList.push({
 });
 
 condition.axiomList.push({
+        name: "conj_simp",
+        axiom: ["if", "and", 1, 2, 1]
+});
+
+condition.axiomList.push({
+        name: "if_conj_simp",
+        axiom: ["if", "if", 1, "and", 2, 3, "if", 1, 2]
+});
+
+condition.axiomList.push({
+        name: "ponens",
+        axiom: ["if", "and", "if", 1, 2, 1, 2]
+});
+
+condition.axiomList.push({
         name: "cases",
         axiom: ["if", "and", "if", 1, 3, "if", 2, 3, "if", "or", 1, 2, 3]
 });
