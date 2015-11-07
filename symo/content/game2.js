@@ -328,6 +328,14 @@ function getArity(funcName) {
     return 0;
 }
 
+function getImage(funcName) {
+    for (var i = 0; i < condition.predList.length; i++) {
+        if (condition.predList[i].predName == funcName)
+            return condition.predList[i].image;
+    }
+    return false;
+}
+
 function parseStatement(str) {
     var array = str.split(" ");
     for (var i = 0; i < array.length; i++) {
@@ -475,6 +483,13 @@ allStatements = [];
 function addStatement(cmd, statement) {
     allStatements.push(statement);
     document.getElementById("statementList").innerHTML += ("\t\t(" + cmd + ")\n" + allStatements.length + ". " + toString(statement) + "\n");
+    
+    $("#mainList").append("<div id=\"statement" + allStatements.length + "\"></div>");
+    $("#statement" + allStatements.length).click(clickStatement);
+    $("#statement" + allStatements.length).data("index", allStatements.length);
+    addStatementImages($("#statement" + allStatements.length), statement, "statement" + allStatements.length, allStatements.length, 50, false);
+    $("#mainList").append("<br /><br />");
+    $("#mainList").scrollTop($("#mainList")[0].scrollHeight);
 }
 
 function executeCommand(cmdStr) {
@@ -570,4 +585,277 @@ function executeCommand(cmdStr) {
     default:
         return false;
     }
+}
+
+function addStatementImages(dom, statement, prefix, statementIndex, size, useVar) {
+    for (var i = 0; i < statement.length; i++) {
+        var imgName;
+        if (isNaN(statement[i]))
+            imgName = getImage(statement[i]);
+        else if (useVar)
+            imgName = "var" + statement[i] + ".png";
+        else
+            imgName = "prim" + statement[i] + ".png";
+        dom.append("<img src=\"" + imgName + "\" width=" + size + " height=" + size + " id=\"" + prefix + "_" + i + "\" />");
+        $("#" + prefix + "_" + i).data("index", i);
+        $("#" + prefix + "_" + i).data("statementIndex", statementIndex);
+        $("#" + prefix + "_" + i).click(clickPiece);
+    }
+}
+
+function selectStatement(dom) {
+    dom.css("background-color","ccffff");
+    dom.data("selected", true);
+}
+
+function deselectStatement(dom) {
+    dom.css("background-color","");
+    dom.data("selected", false);
+}
+
+function clearSelection() {
+    for (var i = 0; i < window.selected.length; i++) {
+        deselectStatement(window.selected[i]);
+    }
+    window.selected = [];
+    if (typeof(window.selectedPiece) != "undefined")
+        deselectStatement(window.selectedPiece);
+    delete window.selectedPiece;
+    if (typeof(window.selectedRule) != "undefined")
+        deselectStatement(window.selectedRule);
+    delete window.selectedRule;
+}
+
+function finishTool() {
+    clearSelection();
+    window.maxSelected = 0;
+    window.selectPiece = false;
+    window.tool = "none";
+}
+
+function clickStatement() {
+    if ($(this).data("selected"))
+        return;
+    if (typeof(window.selected[0]) != "undefined" && window.selectPiece)
+        return;
+    if (window.maxSelected > 0) {
+        if (typeof(window.selected[0]) != "undefined")
+            deselectStatement(window.selected[0]);
+        for (var i = 1; i < window.maxSelected; i++)
+            window.selected[i-1] = window.selected[i];
+        window.selected[window.maxSelected - 1] = $(this);
+        selectStatement($(this));
+    }
+    
+    checkToolComplete();
+}
+
+function clickPiece() {
+    if ($(this).data("statementIndex") < 1)
+        return;
+    if (!window.selectPiece)
+        return;
+    if (window.maxSelected > 0 && typeof(window.selected[0]) == "undefined")
+        return;
+    if (typeof(window.selectedPiece) != "undefined")
+        deselectStatement(window.selectedPiece);
+    
+    window.selectedPiece = $(this);
+    selectStatement($(this));
+    
+    checkToolComplete();
+}
+
+function checkToolComplete() {
+    switch (window.tool) {
+    case "none":
+        return true;
+    case "ponens":
+        if (typeof(window.selected[0]) != "undefined") {
+            var st1, st2;
+            st1 = allStatements[window.selected[0].data("index")-1];
+            st2 = allStatements[window.selected[1].data("index")-1];
+            var res = ponens(st1, st2);
+            if (!res)
+                res = ponens(st2, st1);
+            if (!res)
+                return false;
+            addStatement("<tool>", res);
+            finishTool();
+            return true;
+        }
+        return false;
+    case "conjoin":
+        if (typeof(window.selected[0]) != "undefined") {
+            var st1, st2;
+            st1 = allStatements[window.selected[0].data("index")-1];
+            st2 = allStatements[window.selected[1].data("index")-1];
+            var res = conjoin(st1, st2);
+            if (!res)
+                return false;
+            addStatement("<tool>", res);
+            finishTool();
+            return true;
+        }
+        return false;
+    case "verify":
+        if (typeof(window.selected[0]) != "undefined" && typeof(window.selectedPiece) != "undefined") {
+            var st1, st2, pieceIndex;
+            st1 = allStatements[window.selected[0].data("index")-1];
+            st2 = allStatements[window.selectedPiece.data("statementIndex")-1];
+            pieceIndex = window.selectedPiece.data("index");
+            finishTool();
+            var res = verify(st2, pieceIndex, st1);
+            if (!res)
+                return false;
+            addStatement("<tool>", res);
+            return true;
+        }
+        return false;
+    case "tautology":
+        if (typeof(window.selected[0]) != "undefined" && typeof(window.selectedPiece) != "undefined") {
+            var st1, st2, pieceIndex;
+            st1 = allStatements[window.selected[0].data("index")-1];
+            st2 = allStatements[window.selectedPiece.data("statementIndex")-1];
+            pieceIndex = window.selectedPiece.data("index");
+            finishTool();
+            var res = tautology(st2, pieceIndex, st1);
+            if (!res)
+                return false;
+            addStatement("<tool>", res);
+            return true;
+        }
+        return false;
+    case "rewrite":
+        if (typeof(window.selectedPiece) != "undefined" && typeof(window.selectedRule) != "undefined") {
+            var st, pieceIndex;
+            st = allStatements[window.selectedPiece.data("statementIndex")-1];
+            pieceIndex = window.selectedPiece.data("index");
+            var rule = false;
+            for (var i = 0; i < condition.equivalenceList.length; i++) {
+                if (condition.equivalenceList[i].name == window.selectedRule.data("rule"))
+                    rule = condition.equivalenceList[i].rule;
+            }
+            if (!rule)
+                return false;
+            var res = rewrite(st, pieceIndex, rule);
+            if (!res)
+                return false;
+            addStatement("<tool>", res);
+            finishTool();
+            return true;
+        }
+        return false;
+    }
+}
+
+function clickRule() {
+    if (window.tool != "none")
+        finishTool();
+    
+    window.tool = "rewrite";
+    window.maxSelected = 0;
+    window.selectPiece = true;
+    selectStatement($(this));
+    window.selectedRule = $(this);
+}
+
+function clickAxiom() {
+}
+
+function setPonens() {
+    if (window.tool != "none")
+        finishTool();
+    
+    window.tool = "ponens";
+    window.maxSelected = 2;
+    window.selectPiece = false;
+}
+
+function setConjoin() {
+    if (window.tool != "none")
+        finishTool();
+    
+    window.tool = "conjoin";
+    window.maxSelected = 2;
+    window.selectPiece = false;
+}
+
+function setVerify() {
+    if (window.tool != "none")
+        finishTool();
+    
+    window.tool = "verify";
+    window.maxSelected = 1;
+    window.selectPiece = true;
+}
+
+function setTautology() {
+    if (window.tool != "none")
+        finishTool();
+    
+    window.tool = "tautology";
+    window.maxSelected = 1;
+    window.selectPiece = true;
+}
+
+function OnLoad() {
+    window.selected = [];
+    window.maxSelected = 0;
+    window.selectPiece = false;
+    window.tool = "none";
+    
+    for (var i = 0; i < condition.equivalenceList.length; i++) {
+        var name = condition.equivalenceList[i].name;
+        
+        $("#rewriteRules").append("<div id=\"rr_" + name + "\"></div>");
+        $("#rr_" + name).click(clickRule);
+        $("#rr_" + name).data("rule", name);
+        addStatementImages($("#rr_" + name), condition.equivalenceList[i].rule[0], "rr_" + name, -1, 25, true);
+        $("#rr_" + name).append("<img src=\"arrow.png\" width=50 height=25 />");
+        addStatementImages($("#rr_" + name), condition.equivalenceList[i].rule[1], "rr_" + name, -1, 25, true);
+        $("#rewriteRules").append("<br />");
+    }
+    
+    for (var i = 0; i < condition.axiomList.length; i++) {
+        var name = condition.axiomList[i].name;
+        
+        $("#specifyAxioms").append("<div id=\"ax_" + name + "\"></div>");
+        $("#ax_" + name).click(clickAxiom);
+        $("#ax_" + name).data("axiom", name);
+        addStatementImages($("#ax_" + name), condition.axiomList[i].axiom, "ax_" + name, -1, 25, true);
+        $("#specifyAxioms").append("<br />");
+    }
+    
+    $("#specifyAxioms").hide();
+    $("#rewriteRules").hide();
+    $("#debugConsole").hide();
+}
+
+function tabTools() {
+    $("#otherTools").show();
+    $("#specifyAxioms").hide();
+    $("#rewriteRules").hide();
+    $("#debugConsole").hide();
+}
+
+function tabAxioms() {
+    $("#otherTools").hide();
+    $("#specifyAxioms").show();
+    $("#rewriteRules").hide();
+    $("#debugConsole").hide();
+}
+
+function tabRules() {
+    $("#otherTools").hide();
+    $("#specifyAxioms").hide();
+    $("#rewriteRules").show();
+    $("#debugConsole").hide();
+}
+
+function tabDebug() {
+    $("#otherTools").hide();
+    $("#specifyAxioms").hide();
+    $("#rewriteRules").hide();
+    $("#debugConsole").show();
 }
