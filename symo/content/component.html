@@ -1,0 +1,58 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="compressed.button.css" />
+<link rel="stylesheet" href="game.css">
+
+<script src="http://www.html5canvastutorials.com/libraries/kinetic-v3.10.0.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="validation.js"></script>
+<script src="game.js"></script>
+</head>
+<body onload="OnLoad()" onresize = "SetupDragDrop()">
+
+<div id = "game" align = left>
+
+<div id = "content">
+<nav id="menu" align = right>
+	<div id = 'syms'><h2 id = "t1">Logic Symbols</h2></div>
+	<div align = center>
+	<div class="StartTarget">
+		<div class="StarDraggable and" title="AND" id = "pred_and" selectable="no" ></div></div>
+	<div class="StartTarget">
+		<div class="CloudDraggable or" title="OR" id = "pred_or" selectable="no"></div></div>
+	<div class="StartTarget">
+		<div class="DiamondDraggable not" title="NOT" id = "pred_not" selectable="no" ></div></div>
+	<div class="StartTarget">
+		<div class="DropletDraggable if" title="IF" id = "pred_if" selectable="no" ></div></div>
+	</div>
+</nav>
+<table align="center">
+	<tr>
+		<td><div class="StartTarget">
+			<div class="EyeDraggable pred" title="Jason works hard" id = "prim0" selectable="no"  ></div></div></td>
+		<td><div class="StartTarget">
+			<div class="HeartDraggable pred" title="his son will go to college" id = "prim1" selectable="no" ></div></div></td>
+		<td><div class="StartTarget">
+			<div class="HexagonDraggable pred" title="his wife can buy lots of things" id = "prim2" selectable="no"></div></div></td>
+		<td><div class="StartTarget">
+			<div class="LightningDraggable pred" id = "prim3" selectable="no"></div></div></td>
+		<td><div class="StartTarget">
+			<div class="PentagonDraggable pred" id = "prim4" selectable="no"></div></div></td>
+		<td><div class="StartTarget">
+			<div class="TriangleDraggable pred" id = "prim5" selectable="no"></div></div></td>
+		<td><div class="StartTarget">
+			<div class="Draggable pred" id = "prim6" selectable="no" style="background-color: orange;"></div></div></td>
+	</tr>
+</table>
+
+<table id = boxes align="center">
+	<tr id = rowlist>
+		<td><div id = box0 class="DropTarget">
+			</div></td>
+	</tr>
+</table>
+
+</br>
+</div>
+</body>
+</html>
