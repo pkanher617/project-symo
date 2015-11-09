@@ -183,6 +183,9 @@ dispatcher.onPost("/user/register", function(req, res) {
             }, function(err, result) {
                 if (err) return 'db got errors';
                 var id = result.insertId;
+                // res.setHeader("Set-Cookie", ["token=" + cookie + "; expires=" + new Date(new Date().getTime() + 864000).toUTCString(),
+                //     "name=" + nickname + "; expires=" + new Date(new Date().getTime() + 864000).toUTCString()
+                // ]);
                 cookieStore[cookie] = id;
                 console.log(cookieStore);
                 return res.end(JSON.stringify({
@@ -230,6 +233,9 @@ dispatcher.onPost("/user/login", function(req, res) {
                 cookieStore[cookie] = rows[0].id;
                 connection.query('UPDATE `User` SET cookie = ? WHERE id = ?', [cookie, rows[0].id], function(err, result) {
                     if (err) return res.end('db got errors');
+                    // res.setHeader("Set-Cookie", ["token=" + cookie + "; expires=" + new Date(new Date().getTime() + 864000).toUTCString(),
+                    //     "name=" + nickname + "; expires=" + new Date(new Date().getTime() + 864000).toUTCString()
+                    // ]);
                     return res.end(JSON.stringify({
                         success: true,
                         cookie: cookie,
@@ -250,6 +256,9 @@ dispatcher.onPost("/user/logout", function(req, res) {
     var rc = req.headers.cookie;
     if (cookieStore[rc.token]) {
         delete cookieStore[rc.token];
+        // res.setHeader("Set-Cookie", ["token=deleted",
+        //     "name=deleted"
+        // ]);
         return res.end(JSON.stringify({
             success: false,
             error: 'Password is not correct'
