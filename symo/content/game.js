@@ -24,7 +24,7 @@ condition.predList.push({
 });
 
 condition.predList.push({
-		predName: "pred",
+		predName: "prim",
 		color: "ff0000",
         evaluation: function (stack) {
             var arg1 = stack[stack.length-1];
@@ -263,7 +263,15 @@ function DragStop(o,e){
 }
 
 function getSolution(){
-	alert(validateSolution(getCurrent(), solution, condition));
+    var statement = getCurrent();
+	if (!validateSolution(statement, solution, condition)) {
+        alert("Sorry, that's incorrect. Try again.");
+    }
+    else {
+        // Go to game 2
+        alert("Correct! You will now proceed to game 2.");
+        location.href = "/game2.html?" + statement.join();
+    }
 }
 
 function getCurrent(){
@@ -365,10 +373,6 @@ function TouchEnd(e){
 	HandleDragStop();
 }
 
-function $(s){
-	return document.getElementById(s);
-}
-
 
 function GetObjPos(obj){
 	var x = 0;
@@ -409,12 +413,12 @@ function OnTargetDrop(){
 		
 		var n = 0;
 		var e = false;
-		
 		for (oo in condition.predList){
 			var object = condition.predList[oo];
 			if (oDragItem.className.indexOf(object.predName) > -1){
 				n = object.arity;
 				e = true;
+                break;
 			}
 			
 		}

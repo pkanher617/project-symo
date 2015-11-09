@@ -6,6 +6,18 @@ var currentState = null;
 condition.predList = [];
 
 condition.predList.push({
+		predName: "prim",
+		color: "ff0000",
+        evaluation: function (stack) {
+            var arg1 = stack[stack.length-1];
+            var arg2 = stack[stack.length-2];
+            stack.splice(stack.length-2, 2, arg1 && arg2);
+        },
+		arity: 0,
+		image: "and.png"
+});
+
+condition.predList.push({
 		predName: "and",
 		color: "ff0000",
         evaluation: function (stack) {
@@ -493,6 +505,8 @@ function addStatement(cmd, statement) {
     addStatementImages($("#statement" + allStatements.length), statement, "statement" + allStatements.length, allStatements.length, 50, false);
     $("#mainList").append("<br /><br />");
     $("#mainList").scrollTop($("#mainList")[0].scrollHeight);
+    
+    checkWin(statement);
 }
 
 function executeCommand(cmdStr) {
@@ -764,6 +778,40 @@ function clickRule() {
 }
 
 function clickAxiom() {
+    var name = $(this).data("axiom");
+    for (var i = 0; i < condition.axiomList.length; i++) {
+        if (condition.axiomList[i].name == name)
+            axiom = condition.axiomList[i].axiom;
+    }
+    if (!axiom)
+        return false;
+    window.axiom = axiom;
+    var max = 0;
+    for (var i = 0; i < axiom.length; i++) {
+        if (axiom[i] > max)
+            max = axiom[i];
+    }
+    window.maxAxiomParams = max;
+    window.currentAxiomParam = 1;
+    window.func = nextAxiomParam;
+    window.axiomParams = [];
+    if (max > 0)
+        overlay();
+}
+
+function nextAxiomParam(statement) {
+    window.axiomParams.push(statement);
+    window.currentAxiomParam++;
+    window.func = nextAxiomParam;
+    if (window.currentAxiomParam > window.maxAxiomParams) {
+        var res = specify(window.axiom, window.axiomParams);
+        if (!res)
+            return false;
+        addStatement("<tool>", res);
+        return true;
+    }
+    else
+        overlay();
 }
 
 function setPonens() {
@@ -833,6 +881,19 @@ function OnLoad() {
     $("#specifyAxioms").hide();
     $("#rewriteRules").hide();
     $("#debugConsole").hide();
+    
+    addStatement("<tool>", parseStatement(window.location.search.replace("?", "").replace(/,/g, " ")));
+
+    $("#statement" + allStatements.length).click(clickStatement);
+    $("#statement" + allStatements.length).data("index", -1);
+    addStatementImages($("#prove"), ["or", "not", 1, 3], "conc", -1, 50, false);
+}
+
+function checkWin(st) {
+    if (equals(st, ["or", "not", 1, 3])) {
+        alert("Congratulations! You've finished!");
+        location.href = "/pre-landing.html";
+    }
 }
 
 function tabTools() {
@@ -873,6 +934,7 @@ function overlay() {
         overlayObj = document.getElementById("overlay");
     }
     overlayObj.style.visibility = (overlayObj.style.visibility == "visible") ? "hidden" : "visible";
+    document.getElementById('componentPanel').contentWindow.location.reload();
 }
 
 function returnFromComponent() {

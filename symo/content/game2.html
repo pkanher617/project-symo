@@ -1,18 +1,18 @@
 <html>
 <head>
 <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
-<script src="game2.js"></script>
 <script src="game.js"></script>
+<script src="game2.js"></script>
 <script type="text/javascript">
 window.onload = function() {
   // Get a reference to the div on the page that will display the
   // message text.
-  var func = function (element) {alert(element);};
+  window.func = function (element) {alert(element);};
   // A function to process messages received by the window.
   function receiveMessage(e) {
     // Check to make sure that this message came from the correct domain.
     overlay();
-    func(e.data);
+    window.func(e.data);
   }
   // Setup an event listener that calls receiveMessage() when the window
   // receives a new MessageEvent.
@@ -23,6 +23,7 @@ window.onload = function() {
 <link rel="stylesheet" type="text/css" href="compressed.button.css" />
 <link rel="stylesheet" href="game.css">
 </head>
+<body onLoad="OnLoad()">
 <script>
 
 function enterCmd() {
@@ -32,14 +33,13 @@ function enterCmd() {
 }
 
 </script>
-<div id="mainList" style="height:500px; overflow-y:scroll;"></div><br />
+<div id="mainList" style="height:250px; overflow-y:scroll;"></div><br />
+<div id="prove"><font size=24><b>Prove: </b></font></div><br />
 <div id="tabs">
     <input type="button" value="Standard Tools" onclick="tabTools()" />
     <input type="button" value="Introduce Axioms" onclick="tabAxioms()" />
     <input type="button" value="Rewrite Rules" onclick="tabRules()" />
     <input type="button" value="Debug Console" onclick="tabDebug()" />
-    <input type="button" value="Test Button" class="blue button" onclick='getCurrentStatement(function (theStatement, document) {alert(theStatement[0]);})'>
-    <button id="send">Send Message</button>
 </div><br />
 <div id="otherTools">
     <input type="button" value="Modus Ponens" onclick="setPonens()" />
@@ -47,8 +47,8 @@ function enterCmd() {
     <input type="button" value="Replace Tautology" onclick="setVerify()" />
     <input type="button" value="Introduce Tautology" onclick="setTautology()" />
 </div>
-<div id="specifyAxioms" style="height:300px; overflow-y:scroll;"></div>
-<div id="rewriteRules" style="height:300px; overflow-y:scroll;"></div>
+<div id="specifyAxioms" style="height:180px; overflow-y:scroll;"></div>
+<div id="rewriteRules" style="height:180px; overflow-y:scroll;"></div>
 <div id="debugConsole">
     <textarea id="statementList" rows=20 cols=150></textarea><br />
     <input type="text" id="cmdEntry" size=150 onKeyDown="if (event.keyCode == 13) enterCmd();" />
