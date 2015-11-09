@@ -1,4 +1,6 @@
 function validateSolution(givenExp, solution, condition) {
+    alert(givenExp);
+    alert(solution);
     var maxPredicates = 0;
     for (var i = 0; i < givenExp.length; i++) {
         if (givenExp[i] > maxPredicates)

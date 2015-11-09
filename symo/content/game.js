@@ -76,7 +76,7 @@ condition.predList.push({
 				
 
 function OnLoad(){
-	solution = ["IF", "Jason works hard","AND","his son will go to college","his wife can buy lots of things"];
+	solution = ["if", 1, "and", 2, 3];
 	document.getElementById("ins1").style.font = "italic bold 20px arial,serif";
 	document.getElementById("ins2").style.font = "italic bold 20px arial,serif";
 	document.getElementById("t1").style.font = "italic bold 20px arial,serif";
@@ -266,8 +266,6 @@ function DragStop(o,e){
 }
 
 function getSolution(){
-	alert(getCurrent());
-	alert(solution);
 	alert(validateSolution(getCurrent(), solution, condition));
 }
 
@@ -277,7 +275,13 @@ function getCurrent(){
 	for(var i=0; i<oList.length; i++){
 		var o = oList[i];
 		if (o.className == "DropTarget"){
-			currentList[currentList.length] = o.lastChild.title;
+            var id = o.lastChild.id;
+            var statementPart;
+            if (id.startsWith("prim"))
+                statementPart = parseInt(id.substring(4)) + 1;
+            else
+                statementPart = id.substring(5);
+			currentList[currentList.length] = statementPart;
 		}
 	}
 	//alert(currentList);
