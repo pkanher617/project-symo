@@ -5,7 +5,7 @@ var iClickOffsetX = 0;
 var iClickOffsetY = 0;
 var INTERVAL = 20;
 var glob = 0;
-var indexRec = 0
+var indexRec = 0;
 
 
 
@@ -87,13 +87,14 @@ function SetupDragDrop(){
 
 function MakeDragable(oBox){
 	if (navigator.platform=="iPad"){
-		oBox.ontouchstart= function(e){TouchStart(e)};
-		oBox.ontouchmove=function(e){TouchMove(e)};
-		oBox.ontouchend=function(e){TouchEnd(e)};
+		oBox.ontouchstart= function(e){TouchStart(e);};
+		oBox.ontouchmove=function(e){TouchMove(e);};
+		oBox.ontouchend=function(e){TouchEnd(e);};
 	}else{
-		oBox.onmousemove= function(e){DragMove(oBox,e)};
-		oBox.onmouseup=function(e){DragStop(oBox,e)};
-		oBox.onmousedown=function(e){DragStart(oBox,e);return false};
+		oBox.onmousemove= function(e){DragMove(oBox,e);};
+		oBox.onmouseup=function(e){DragStop(oBox,e);};
+		oBox.onmousedown=function(e){DragStart(oBox,e);
+			return false;};
 	}	
 }
 
@@ -156,16 +157,11 @@ function HandleDragMove(x,y){
 		var first = oDragItem.parentNode.parentNode.cellIndex;
 		glob = first;
 		indexRec = 1;
-		
-		
 		CountRemoveIndex();
 		//alert(glob);
 		deleteBoxes(first, glob - 1);
 		glob = 0;
-		
 		oDragItem.parentNode.removeChild(oDragItem);
-		
-		
 		oDragItem = null;
 		return;
 		

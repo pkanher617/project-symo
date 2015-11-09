@@ -2,6 +2,9 @@
 <head>
 <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
 <script src="game2.js"></script>
+<script src="game.js"></script>
+<link rel="stylesheet" type="text/css" href="compressed.button.css" />
+<link rel="stylesheet" href="game.css">
 </head>
 <body onload="OnLoad()">
 <script>
@@ -19,6 +22,7 @@ function enterCmd() {
     <input type="button" value="Introduce Axioms" onclick="tabAxioms()" />
     <input type="button" value="Rewrite Rules" onclick="tabRules()" />
     <input type="button" value="Debug Console" onclick="tabDebug()" />
+    <input type="button" value="Test button" class="blue button" onclick='overlay()'>
 </div><br />
 <div id="otherTools">
     <input type="button" value="Modus Ponens" onclick="setPonens()" />
@@ -31,6 +35,70 @@ function enterCmd() {
 <div id="debugConsole">
     <textarea id="statementList" rows=20 cols=150></textarea><br />
     <input type="text" id="cmdEntry" size=150 onKeyDown="if (event.keyCode == 13) enterCmd();" />
+</div>
+
+<div id="overlay">
+    <body onload="OnLoad()" onresize = "SetupDragDrop()">
+
+<div id = "game" align = left>
+<div id= "instruction">
+
+    <h2 id = "ins1">Translate the following sentence to symbols using logic</h2>
+    <h2 id = "ins2">Try to keep the meaning of the sentence the same</h2>
+    
+</div>
+    
+
+<div id = "content">
+<nav id="menu" align = right>
+    <div id = 'syms'><h2 id = "t1">Logic Symbols</h2></div>
+    <div align = center>
+    <div class="StartTarget">
+        <div class="StarDraggable and" title="AND" id = "pred_and" selectable="no" ></div></div>
+    <div class="StartTarget">
+        <div class="CloudDraggable or" title="OR" id = "pred_or" selectable="no"></div></div>
+    <div class="StartTarget">
+        <div class="DiamondDraggable not" title="NOT" id = "pred_not" selectable="no" ></div></div>
+    <div class="StartTarget">
+        <div class="DropletDraggable if" title="IF" id = "pred_if" selectable="no" ></div></div>
+    </div>
+</nav>
+<table align="center">
+    <tr>
+        <td><div class="StartTarget">
+            <div class="EyeDraggable" title="Jason works hard" id = "prim0" selectable="no"  ></div></div></td>
+        <td><div class="StartTarget">
+            <div class="HeartDraggable" title="his son will go to college" id = "prim1" selectable="no" ></div></div></td>
+        <td><div class="StartTarget">
+            <div class="HexagonDraggable" title="his wife can buy lots of things" id = "prim2" selectable="no"></div></div></td>
+        <td><div class="StartTarget">
+            <div class="LightningDraggable" id = "prim3" selectable="no"></div></div></td>
+        <td><div class="StartTarget">
+            <div class="PentagonDraggable" id = "prim4" selectable="no"></div></div></td>
+        <td><div class="StartTarget">
+            <div class="TriangleDraggable" id = "prim5" selectable="no"></div></div></td>
+        <td><div class="StartTarget">
+            <div class="Draggable" id = "prim6" selectable="no" style="background-color: orange;"></div></div></td>
+    </tr>
+</table>
+<h1 id = "gameSentence">"If Jason works hard, his son will go to college and his wife can buy lots of things"</h1>
+
+<table id = boxes align="center">
+    <tr id = rowlist>
+        <td><div id = box0 class="DropTarget">
+            </div></td>
+        
+    </tr>
+</table>
+
+<div id = "buttonHolder" align = left>
+    <br><a id = "game1Check" href="javascript:void(0)" class="blue button">Check Solution</a></br>
+    <br><a id = "game1elp" href="javascript:void(0)" class="blue button">Help</a></br>
+    <br><a id = "game1Undo" href="javascript:void(0)" class="blue button">Undo</a></br>
+</div>
+</br>
+</div>
+</body>
 </div>
 </body>
 </html>

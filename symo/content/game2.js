@@ -859,3 +859,10 @@ function tabDebug() {
     $("#rewriteRules").hide();
     $("#debugConsole").show();
 }
+
+// Popup stuff
+function overlay() {
+    el = document.getElementById("overlay");
+    el.style.visibility = (el.style.visibility == "visible") ? "hidden" : "visible";
+}
+
