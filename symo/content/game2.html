@@ -1,6 +1,6 @@
 <html>
 <head>
-
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
 <script src="game2.js"></script>
 </head>
 <body onload="OnLoad()">
@@ -13,7 +13,24 @@ function enterCmd() {
 }
 
 </script>
-<textarea id="statementList" rows=30 cols=150></textarea><br />
-<input type="text" id="cmdEntry" size=150 onKeyDown="if (event.keyCode == 13) enterCmd();" />
+<div id="mainList" style="height:500px; overflow-y:scroll;"></div><br />
+<div id="tabs">
+    <input type="button" value="Standard Tools" onclick="tabTools()" />
+    <input type="button" value="Introduce Axioms" onclick="tabAxioms()" />
+    <input type="button" value="Rewrite Rules" onclick="tabRules()" />
+    <input type="button" value="Debug Console" onclick="tabDebug()" />
+</div><br />
+<div id="otherTools">
+    <input type="button" value="Modus Ponens" onclick="setPonens()" />
+    <input type="button" value="Conjoin" onclick="setConjoin()" />
+    <input type="button" value="Replace Tautology" onclick="setVerify()" />
+    <input type="button" value="Introduce Tautology" onclick="setTautology()" />
+</div>
+<div id="specifyAxioms" style="height:300px; overflow-y:scroll;"></div>
+<div id="rewriteRules" style="height:300px; overflow-y:scroll;"></div>
+<div id="debugConsole">
+    <textarea id="statementList" rows=20 cols=150></textarea><br />
+    <input type="text" id="cmdEntry" size=150 onKeyDown="if (event.keyCode == 13) enterCmd();" />
+</div>
 </body>
 </html>
