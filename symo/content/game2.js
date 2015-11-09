@@ -1,4 +1,7 @@
 var condition = {};
+var componentFunction = null;
+var overlayObj = null;
+var currentState = null;
 
 condition.predList = [];
 
@@ -861,8 +864,27 @@ function tabDebug() {
 }
 
 // Popup stuff
-function overlay() {
-    el = document.getElementById("overlay");
-    el.style.visibility = (el.style.visibility == "visible") ? "hidden" : "visible";
+function getCurrentStatement(func) {
+    document.getElementById("componentPanel").contentWindow.componentFunction = func;
+    overlay();
 }
+
+function overlay() {
+    if(overlayObj === null) {
+        overlayObj = document.getElementById("overlay");
+        if(overlayObj === null) {
+            overlayObj = window.parent.overlayObj;
+        }
+    }
+    overlayObj.style.visibility = (overlayObj.style.visibility == "visible") ? "hidden" : "visible";
+}
+
+function returnFromComponent() {
+    window.parent.currentState = getCurrent();
+    console.log(window.parent.currentState);
+    componentFunction(window.parent.currentState);
+    overlay();
+}
+
+
 

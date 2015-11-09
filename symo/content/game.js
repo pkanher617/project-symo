@@ -8,9 +8,6 @@ var glob = 0;
 var indexRec = 0;
 var solution = [];
 
-
-
-
 var condition = {};
 condition.predList = [];
 
@@ -261,7 +258,7 @@ function DragStop(o,e){
 		window.removeEventListener ("mousemove", DragMove2, true);
 		window.removeEventListener ("mouseup",   DragStop2, true);
 	}
-	
+
 	HandleDragStop();
 }
 

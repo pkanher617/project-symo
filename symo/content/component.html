@@ -7,8 +7,9 @@
 <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
 <script src="validation.js"></script>
 <script src="game.js"></script>
+<script src="game2.js"></script>
 </head>
-<body onload="OnLoad()" onresize = "SetupDragDrop()">
+<body onload="SetupDragDrop()" onresize = "SetupDragDrop()">
 
 <div id = "game" align = left>
 
@@ -45,12 +46,17 @@
 	</tr>
 </table>
 
-<table id = boxes align="center">
-	<tr id = rowlist>
+<table id = 'boxes' align="center">
+	<tr id = 'rowlist'>
 		<td><div id = box0 class="DropTarget">
 			</div></td>
 	</tr>
 </table>
+
+<div id = "buttonHolder" align = left>
+    <br><a id = "game1Check" href="#" class="blue button" onclick="returnFromComponent()">Check Solution</a></br>
+</div>
+
 
 </br>
 </div>
