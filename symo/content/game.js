@@ -6,6 +6,7 @@ var iClickOffsetY = 0;
 var INTERVAL = 20;
 var glob = 0;
 var indexRec = 0
+var solution = [];
 
 
 
@@ -22,6 +23,18 @@ condition.predList.push({
             stack.splice(stack.length-2, 2, arg1 && arg2);
         },
 		arity: 2,
+		image: "and.png"
+});
+
+condition.predList.push({
+		predName: "pred",
+		color: "ff0000",
+        evaluation: function (stack) {
+            var arg1 = stack[stack.length-1];
+            var arg2 = stack[stack.length-2];
+            stack.splice(stack.length-2, 2, arg1 && arg2);
+        },
+		arity: 0,
 		image: "and.png"
 });
 
@@ -63,6 +76,7 @@ condition.predList.push({
 				
 
 function OnLoad(){
+	solution = ["IF", "Jason works hard","AND","his son will go to college","his wife can buy lots of things"];
 	document.getElementById("ins1").style.font = "italic bold 20px arial,serif";
 	document.getElementById("ins2").style.font = "italic bold 20px arial,serif";
 	document.getElementById("t1").style.font = "italic bold 20px arial,serif";
@@ -145,13 +159,15 @@ function DragMove(o,e){
 }
 
 function HandleDragMove(x,y){
+	
 	with(oDragItem.style){
 		zIndex = 1000;
 		position="absolute";
 		left=x;
 		top=y;
 	}
-
+	
+	
 	if (oDragItem.parentNode.className.indexOf("DropTarget") > -1){
 		var first = oDragItem.parentNode.parentNode.cellIndex;
 		glob = first;
@@ -251,6 +267,25 @@ function DragStop(o,e){
 	}
 	
 	HandleDragStop();
+}
+
+function getSolution(){
+	alert(getCurrent());
+	alert(solution);
+	alert(validateSolution(getCurrent(), solution, condition));
+}
+
+function getCurrent(){
+	var currentList = [];
+	var oList = document.getElementsByTagName("div");
+	for(var i=0; i<oList.length; i++){
+		var o = oList[i];
+		if (o.className == "DropTarget"){
+			currentList[currentList.length] = o.lastChild.title;
+		}
+	}
+	//alert(currentList);
+	return currentList;
 }
 
 function checkWin(){
@@ -374,6 +409,7 @@ function OnTargetDrop(){
 	oDragItem.style.position="";
 	
 	if (oDragItem.parentNode.className.indexOf("DropTarget") <= -1){
+		
 		var n = 0;
 		var e = false;
 		
@@ -386,6 +422,11 @@ function OnTargetDrop(){
 			
 		}
 		if (!e) {
+			//temp = oDragItem.cloneNode();
+			//oDragTarget.appendChild(temp);
+			//alert(oDragTarget.parentNode.innerHTML);
+			//alert(oDragTarget.innerHTML);
+			SetupDragDrop();
 			return;
 		}
 		for (i = 0; i < n; i++){
