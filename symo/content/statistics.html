@@ -5,6 +5,7 @@
     <title>Symo Statistics</title>
     <link rel="stylesheet" href="landing.css">
     <link rel="stylesheet" href="compressed.button.css">
+    <script src="stats.js"></script>
   </head>
   <script>
   function setImage(url){
@@ -16,11 +17,20 @@
       <h2><img src="symoIcon.png">Statistics:<br>
       </h2>
       <h3>View statistics here</h3><br>
-      <img id="statsImage" src="mockTotalGameStats.png"><br>
-      <a onclick="setImage('mockGame1Stats.png')">
-      <div class="blue button">Stat 1</div></a><br><br>
-      <a onclick="setImage('mockTotalGameStats.png')">
-      <div class="blue button">Stat 2</div></a><br><br>
+      <img id="statsImage" src="../../images/mockOverallStats.png"><br>
+      <br>
+      <table align="center" style="width: 100%">
+        <tr class="spaceUnder">
+          <td align="left"><a onclick="pickMockStats('Overall')"><div class="blue button">Overall Game</div></a></td>
+          <td align="center"><a onclick="pickMockStats('Game 1')"><div class="blue button">Game 1</div></a></td>
+          <td align="right"><a onclick="pickMockStats('Game 2')"><div class="blue button">Game 2</div></a></td>
+        </tr>
+        <tr class="spaceUnder">
+          <td align="left"><a onclick="pickMockStats('Reset Times')"><div class="blue button">Reset Times</div></a></td>
+          <td></td>
+          <td align="right"><a onclick="pickMockStats('Reset Stats')"><div class="blue button">Reset Stats</div></a></td>
+        </tr>
+      </table>
     </div>
   </body>
 </html>

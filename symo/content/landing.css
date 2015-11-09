@@ -30,3 +30,13 @@ display: block;
     font-family: Arial;
     margin-bottom: 20px;
 }
+
+td {
+	padding-left: 6em;
+	padding-right: 6em;
+}
+
+tr.spaceUnder > td
+{
+  padding-bottom: 1em;
+}
