@@ -865,26 +865,22 @@ function tabDebug() {
 
 // Popup stuff
 function getCurrentStatement(func) {
-    document.getElementById("componentPanel").contentWindow.componentFunction = func;
     overlay();
 }
 
 function overlay() {
     if(overlayObj === null) {
         overlayObj = document.getElementById("overlay");
-        if(overlayObj === null) {
-            overlayObj = window.parent.overlayObj;
-        }
     }
     overlayObj.style.visibility = (overlayObj.style.visibility == "visible") ? "hidden" : "visible";
 }
 
 function returnFromComponent() {
-    window.parent.currentState = getCurrent();
-    console.log(window.parent.currentState);
-    componentFunction(window.parent.currentState);
+    // window.parent.currentState = getCurrent();
+    // console.log(window.parent.currentState);
+    // componentFunction(window.parent.currentState);
     overlay();
+    console.log(overlayObj.func);
 }
-
 
 

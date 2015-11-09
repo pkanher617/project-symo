@@ -3,6 +3,23 @@
 <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
 <script src="game2.js"></script>
 <script src="game.js"></script>
+<script type="text/javascript">
+window.onload = function() {
+  // Get a reference to the div on the page that will display the
+  // message text.
+  var func = function (element) {alert(element);};
+  // A function to process messages received by the window.
+  function receiveMessage(e) {
+    // Check to make sure that this message came from the correct domain.
+    overlay();
+    func(e.data);
+  }
+  // Setup an event listener that calls receiveMessage() when the window
+  // receives a new MessageEvent.
+  window.addEventListener('message', receiveMessage);
+};
+
+</script>
 <link rel="stylesheet" type="text/css" href="compressed.button.css" />
 <link rel="stylesheet" href="game.css">
 </head>
@@ -21,7 +38,8 @@ function enterCmd() {
     <input type="button" value="Introduce Axioms" onclick="tabAxioms()" />
     <input type="button" value="Rewrite Rules" onclick="tabRules()" />
     <input type="button" value="Debug Console" onclick="tabDebug()" />
-    <input type="button" value="Test Button" class="blue button" onclick='getCurrentStatement(function (theStatement) {alert(theStatement[0]);})'>
+    <input type="button" value="Test Button" class="blue button" onclick='getCurrentStatement(function (theStatement, document) {alert(theStatement[0]);})'>
+    <button id="send">Send Message</button>
 </div><br />
 <div id="otherTools">
     <input type="button" value="Modus Ponens" onclick="setPonens()" />
