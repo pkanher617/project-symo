@@ -1,0 +1,39 @@
+div {
+text-align: center;
+border: 2px inset gray;
+}
+
+.info {
+	border: 0px;
+	margin-bottom: 20px;
+}
+
+.info > label {
+	font-size: 20px;
+	margin-right: 10px;
+}
+
+.info > label > input {
+	font-size: 15px;
+}
+
+.info > label > button {
+	font-size: 15px;
+    font-family: Arial;
+    border-radius: 5px;
+    color: black;
+    background-color: white;
+}
+
+#pwd {
+	border: 0px;
+}
+
+.setting_button {
+	font-size: 18px;
+    font-family: Arial;
+    border-radius: 5px;
+    color: white;
+    background-color: CornflowerBlue;
+    margin-left: 10px;
+}

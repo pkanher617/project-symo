@@ -37,11 +37,17 @@ $(document).ready(function() {
 	$('#closereg').click(function() {
 		$("#registerform").hide();
 		$("#registerform").removeClass("front");
+		$('#signup_username').val("");
+		$('#signup_nickname').val("");
+		$('#signup_password').val("");
+		$('#signup_password2').val("");
 	});
 
 	$('#closelog').click(function() {
 		$("#loginform").hide();
 		$("#loginform").removeClass("front");
+		$('#login_username').val("");
+		$('#login_password').val("");
 	});
 
 	$('#register-confirm').click(function() {
@@ -67,8 +73,7 @@ $(document).ready(function() {
 						alert("success!");
 						$.cookie('name', nickname);
 						$.cookie('token', result.cookie);
-						$("#registerform").hide();
-						$("#registerform").removeClass("front")
+						$.cookie('difficulty', '0');
 						$('#register').hide();
 						$('#login').html("Log Out");
 						$('#welcome').show();
@@ -76,6 +81,12 @@ $(document).ready(function() {
 					} else {
 						alert(result.error);
 					}
+					$("#registerform").hide();
+					$("#registerform").removeClass("front");
+					$('#signup_username').val("");
+					$('#signup_nickname').val("");
+					$('#signup_password').val("");
+					$('#signup_password2').val("");
 				},
 				error: function(jqXHR, textStatus, errorThrown) {
 					alert("Server got errors");
@@ -101,8 +112,7 @@ $(document).ready(function() {
 				if (result.success) {
 					$.cookie('name', result.nickname);
 					$.cookie('token', result.cookie);
-					$("#loginform").hide();
-					$("#loginform").removeClass("front")
+					$.cookie('difficulty', result.difficulty);
 					$('#register').hide();
 					$('#login').html("Log Out");
 					$('#welcome').show();
@@ -110,6 +120,10 @@ $(document).ready(function() {
 				} else {
 					alert(result.error);
 				}
+				$("#loginform").hide();
+				$("#loginform").removeClass("front")
+				$('#login_username').val("");
+				$('#login_password').val("");
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 				alert("Server got errors");

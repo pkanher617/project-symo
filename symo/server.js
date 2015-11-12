@@ -221,7 +221,10 @@ dispatcher.onPost("/user/login", function(req, res) {
     var cookie = uuid.v1();
 
     connection.query('SELECT * FROM `User` WHERE `username` = ?', [username], function(err, rows, fields) {
-        if (err) return res.end('db got errors');
+        if (err) return res.end(JSON.stringify({
+            success: false,
+            error: 'db got errors'
+        }));
         if (rows.length == 0) {
             return res.end(JSON.stringify({
                 success: false,
@@ -234,12 +237,13 @@ dispatcher.onPost("/user/login", function(req, res) {
                 connection.query('UPDATE `User` SET cookie = ? WHERE id = ?', [cookie, rows[0].id], function(err, result) {
                     if (err) return res.end('db got errors');
                     // res.setHeader("Set-Cookie", ["token=" + cookie + "; expires=" + new Date(new Date().getTime() + 864000).toUTCString(),
-                    //     "name=" + nickname + "; expires=" + new Date(new Date().getTime() + 864000).toUTCString()
+                    //     "name=" + rows[0].nickname + "; expires=" + new Date(new Date().getTime() + 864000).toUTCString()
                     // ]);
                     return res.end(JSON.stringify({
                         success: true,
                         cookie: cookie,
-                        nickname: rows[0].nickname
+                        nickname: rows[0].nickname,
+                        difficulty: rows[0].difficulty
                     }));
                 })
             } else {
@@ -253,23 +257,25 @@ dispatcher.onPost("/user/login", function(req, res) {
 });
 
 dispatcher.onPost("/user/logout", function(req, res) {
-    var rc = req.headers.cookie;
-    if (cookieStore[rc.token]) {
-        delete cookieStore[rc.token];
-        // res.setHeader("Set-Cookie", ["token=deleted",
-        //     "name=deleted"
-        // ]);
-        return res.end(JSON.stringify({
-            success: false,
-            error: 'Password is not correct'
-        }));
-    } else {
-        return res.end(JSON.stringify({
-            success: false,
-            error: 'User does not have permission to do this'
-        }));
-    }
-})
+    // var rc = req.headers.cookie;
+    var cookie = qs.parse(req.headers.cookie);
+    delete cookieStore[cookie.token];
+    // res.setHeader("Set-Cookie", ["token=deleted",
+    //     "name=deleted"
+    // ]);
+    return res.end(JSON.stringify({
+        success: true
+    }));
+
+});
+
+dispatcher.onPost("/user/setting", function(req, res) {
+   
+});
+
+dispatcher.onPost("/user/changePw", function(req, res) {
+   
+});
 
 
 dispatcher.onPost("/post1", function(req, res) { //this is included to show the onPost method in use
@@ -350,6 +356,12 @@ var connection = mysql.createConnection({
 });
 
 connection.connect();
+
+connection.query('SELECT * FROM `User`', function(err, rows, fields) {
+    for (var i in rows) {
+        cookieStore[rows[i].cookie] = rows[i].id
+    }
+});
 
 server.listen(PORT, function() {
     console.log("Server listening on: http://localhost:%s", PORT);
