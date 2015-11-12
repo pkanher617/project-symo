@@ -406,7 +406,6 @@ function OnTargetOut(){
 }
 
 function OnTargetDrop(){
-	
 	oDragItem.style.position="";
 	
 	if (oDragItem.parentNode.className.indexOf("DropTarget") <= -1){
@@ -440,7 +439,11 @@ function OnTargetDrop(){
 			SetupDragDrop();
 		}
 		temp = oDragItem.cloneNode();
-		oDragTarget.appendChild(temp);
+		//alert(oDragTarget.innerHTML);
+		if (oDragTarget.lastChild == null){
+			oDragTarget.appendChild(temp);
+			SetupDragDrop();
+		}
 		
 	}
 	else{
