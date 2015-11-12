@@ -408,8 +408,7 @@ function OnTargetOut(){
 function OnTargetDrop(){
 	oDragItem.style.position="";
 	
-	if (oDragItem.parentNode.className.indexOf("DropTarget") <= -1){
-		
+	if (oDragItem.parentNode.className.indexOf("DropTarget") <= -1 && oDragTarget.className != "StartTarget"){
 		var n = 0;
 		var e = false;
 		for (oo in condition.predList){
@@ -430,13 +429,14 @@ function OnTargetDrop(){
 			return;
 		}
 		for (i = 0; i < n; i++){
-			ntd = document.createElement("td");
-			temp = oDragTarget.cloneNode();
-			
-			ntd.appendChild(temp);
-			oDragTarget.parentNode.parentNode.insertBefore(ntd,oDragTarget.parentNode.nextSibling);
-			oDragTarget.innerHTML = "";
-			SetupDragDrop();
+			//if (oDragTarget.lastChild == null){
+				ntd = document.createElement("td");
+				temp = oDragTarget.cloneNode();
+				ntd.appendChild(temp);
+				oDragTarget.parentNode.parentNode.insertBefore(ntd,oDragTarget.parentNode.nextSibling);
+				oDragTarget.innerHTML = "";
+				SetupDragDrop();
+			//}
 		}
 		temp = oDragItem.cloneNode();
 		//alert(oDragTarget.innerHTML);
@@ -447,7 +447,10 @@ function OnTargetDrop(){
 		
 	}
 	else{
-		oDragItem.parentNode.removeChild(oDragItem);
+		if (oDragTarget.className != "StartTarget"){
+			oDragItem.parentNode.removeChild(oDragItem);
+		}
+			
 		
 	}
 		
@@ -457,10 +460,13 @@ function OnTargetDrop(){
 	oDropTargets = [];
 	
 	var oList = document.getElementsByTagName("div");
+	
 	for(var i=0; i<oList.length; i++){
 		var o = oList[i];
 		if (o.className == "DropTarget"){
-			oDropTargets.push(o);
+			if (typeof o.innerHTML.className != 'undefined'){
+				oDropTargets.push(o);
+			}
 			
 		}
 	}
