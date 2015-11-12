@@ -270,11 +270,99 @@ dispatcher.onPost("/user/logout", function(req, res) {
 });
 
 dispatcher.onPost("/user/setting", function(req, res) {
-   
+    var data = qs.parse(req.body);
+    if (!data.cookie) {
+        return res.end(JSON.stringify({
+            success: false,
+            error: 'Missing Argument cookie'
+        }));
+    }
+    if (!data.nickname) {
+        return res.end(JSON.stringify({
+            success: false,
+            error: 'Missing Argument nickname'
+        }));
+    }
+    if (!data.difficulty) {
+        return res.end(JSON.stringify({
+            success: false,
+            error: 'Missing Argument difficulty'
+        }));
+    }
+    var cookie = data.cookie;
+    var id = cookieStore[cookie];
+    connection.query('SELECT * FROM `User` WHERE `id` = ?', [id], function(err, rows, fields) {
+        if (err) return res.end(JSON.stringify({
+            success: false,
+            error: 'db got errors'
+        }));
+        if (rows.length == 0) {
+            return res.end(JSON.stringify({
+                success: false,
+                error: 'User does not exist'
+            }));
+        } else {
+            connection.query('UPDATE `User` SET nickname = ?, difficulty = ? WHERE id = ?', [data.nickname, data.difficulty, rows[0].id], function(err, result) {
+                if (err) return res.end(JSON.stringify({
+                    success: false,
+                    error: 'db got errors'
+                }));
+                return res.end(JSON.stringify({
+                    success: true
+                }));
+            })
+        }
+    });
 });
 
-dispatcher.onPost("/user/changePw", function(req, res) {
-   
+dispatcher.onPost("/user/changePwd", function(req, res) {
+    var data = qs.parse(req.body);
+    if (!data.cookie) {
+        return res.end(JSON.stringify({
+            success: false,
+            error: 'Missing Argument cookie'
+        }));
+    }
+    if (!data.old_pwd) {
+        return res.end(JSON.stringify({
+            success: false,
+            error: 'Missing Argument old password'
+        }));
+    }
+    if (!data.new_pwd) {
+        return res.end(JSON.stringify({
+            success: false,
+            error: 'Missing Argument new password'
+        }));
+    }
+    var cookie = data.cookie;
+    var id = cookieStore[cookie];
+    connection.query('SELECT * FROM `User` WHERE `id` = ?', [id], function(err, rows, fields) {
+        if (err) return res.end(JSON.stringify({
+            success: false,
+            error: 'db got errors'
+        }));
+        if (rows.length == 0) {
+            return res.end(JSON.stringify({
+                success: false,
+                error: 'User does not exist'
+            }));
+        } else {
+            if (passwordHash.verify(data.old_pwd, rows[0].password)) {
+                connection.query('UPDATE `User` SET password = ? WHERE id = ?', [passwordHash.generate(data.new_pwd), rows[0].id], function(err, result) {
+                    if (err) return res.end('db got errors');
+                    return res.end(JSON.stringify({
+                        success: true
+                    }));
+                })
+            } else {
+                return res.end(JSON.stringify({
+                    success: false,
+                    error: 'Old Password is not correct'
+                }));
+            }
+        }
+    });
 });
 
 

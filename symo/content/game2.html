@@ -1,37 +1,78 @@
 <html>
+
 <head>
-<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
-<link rel="stylesheet" href="form.css">
-<script src="game2.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <link rel="stylesheet" href="game.css">
+    <script src="game.js"></script>
+    <script src="game2.js"></script>
+    <script type="text/javascript">
+    window.onload = function() {
+        // Get a reference to the div on the page that will display the
+        // message text.
+        window.func = function(element) {
+            alert(element);
+        };
+        // A function to process messages received by the window.
+        function receiveMessage(e) {
+            // Check to make sure that this message came from the correct domain.
+            overlay();
+            window.func(e.data);
+        }
+        // Setup an event listener that calls receiveMessage() when the window
+        // receives a new MessageEvent.
+        window.addEventListener('message', receiveMessage);
+    };
+    </script>
+    <link rel="stylesheet" type="text/css" href="compressed.button.css" />
+    <link rel="stylesheet" href="game.css">
 </head>
-<body onload="OnLoad()">
-<script>
 
-function enterCmd() {
-    var cmd = document.getElementById("cmdEntry").value;
-    executeCommand(cmd);
-    document.getElementById("cmdEntry").value = "";
-}
-
-</script>
-<div id="mainList" style="height:500px; overflow-y:scroll;"></div><br />
-<div id="tabs">
-    <input type="button" value="Standard Tools" onclick="tabTools()" />
-    <input type="button" value="Introduce Axioms" onclick="tabAxioms()" />
-    <input type="button" value="Rewrite Rules" onclick="tabRules()" />
-    <input type="button" value="Debug Console" onclick="tabDebug()" />
-</div><br />
-<div id="otherTools">
-    <input type="button" value="Modus Ponens" onclick="setPonens()" />
-    <input type="button" value="Conjoin" onclick="setConjoin()" />
-    <input type="button" value="Replace Tautology" onclick="setVerify()" />
-    <input type="button" value="Introduce Tautology" onclick="setTautology()" />
-</div>
-<div id="specifyAxioms" style="height:300px; overflow-y:scroll;"></div>
-<div id="rewriteRules" style="height:300px; overflow-y:scroll;"></div>
-<div id="debugConsole">
-    <textarea id="statementList" rows=20 cols=150></textarea><br />
-    <input type="text" id="cmdEntry" size=150 onKeyDown="if (event.keyCode == 13) enterCmd();" />
-</div>
+<body onLoad="OnLoad()">
+    <script>
+    function enterCmd() {
+        var cmd = document.getElementById("cmdEntry").value;
+        executeCommand(cmd);
+        document.getElementById("cmdEntry").value = "";
+    }
+    </script>
+    <div id="mainList" style="height:250px; overflow-y:scroll;"></div>
+    <br />
+    <div id="prove">
+        <font size=24><b>Prove: </b></font>
+    </div>
+    <br />
+    <div id="tabs">
+        <input type="button" value="Standard Tools" onclick="tabTools()" />
+        <input type="button" value="Introduce Axioms" onclick="tabAxioms()" />
+        <input type="button" value="Rewrite Rules" onclick="tabRules()" />
+        <!--<input type="button" value="Debug Console" onclick="tabDebug()" />-->
+    </div>
+    <br />
+    <div id="otherTools">
+        <input type="button" value="Modus Ponens" onclick="setPonens()" />
+        <input type="button" value="Conjoin" onclick="setConjoin()" />
+        <input type="button" value="Replace Tautology" onclick="setVerify()" />
+        <input type="button" value="Introduce Tautology" onclick="setTautology()" />
+    </div>
+    <div id="specifyAxioms" style="height:180px; overflow-y:scroll;"></div>
+    <div id="rewriteRules" style="height:180px; overflow-y:scroll;"></div>
+    <div id="debugConsole">
+        <textarea id="statementList" rows=20 cols=150></textarea>
+        <br />
+        <input type="text" id="cmdEntry" size=150 onKeyDown="if (event.keyCode == 13) enterCmd();" />
+    </div>
+    <div id="overlay">
+        <iframe id="componentPanel" src="component.html"></iframe>
+    </div>
+    <br>
+    <div class="blue button" onclick="help()">Help</div>
+    </br>
+    <div id="helpform" class="form1" hidden>
+        <div class="form_text">
+            <img id="close" src="close2.png" class="dimpic"/>
+            In this game, you are given a statement created in the previous game, but without any of the English words. You can still see what logical symbols mean by hovering the mouse over them. At the bottom is another statement, which you are trying to prove by using laws of deduction. The buttons at the bottom allow you to use certain logical rules. After clicking on a rule, click on the statement, statements, or parts of statements to which you want to apply the rule. Modus Ponens will take two statements of the form IF 1 2 and 1 and produce statement 2. Conjoin will combine 1 and 2 into AND 1 2. Replace Tautology will use one statement to replace the same statement, within another statement, with T, and Introduce Tautology will perform the opposite, replacing T with a statement. The Introduce Axioms tab allows you to add statements by specifying logical axioms. The 1, 2, 3 boxes will be replaced by statements that you specify in a dialog. The Rewrite Rules tab will give you ways to transform part or all of a statement according to logical equivalence, which is done by clicking toward the beginning of the part of the statement to which the rule applies. Note that new statements can be generated from any other statement, not only the most recent statement. If you create a statement that is not useful in the proof, you may simply ignore it. The game ends when you create a statement that matches the "Prove:" statement.
+        </div>
+    </div>
 </body>
+
 </html>

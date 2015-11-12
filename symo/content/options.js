@@ -10,6 +10,8 @@ $(document).ready(function() {
 		alert("User does not have permission to do this");
 	}
 
+	var difficulty = $.cookie('difficulty');
+
 
 	$('#pwdBtn').click(function() {
 		if ($('#pwdBtn').html() === "Change Password") {
@@ -20,14 +22,23 @@ $(document).ready(function() {
 			$('#save-btn').hide()
 			$('#pwdBtn').html("Save Password");
 		} else {
+			console.log("lalala");
 			$.ajax({
 				type: 'POST',
 				url: "/user/changePwd",
 				data: {
-
+					cookie: $.cookie('token'),
+					old_pwd: $('#old_pwdInput').val(),
+					new_pwd: $('#new_pwdInput').val()
 				},
 				success: function(data) {
-
+					var result = jQuery.parseJSON(data);
+					if (result.success) {
+						alert("Changed Successfully");
+						window.location.replace("pre-landing.html");
+					} else {
+						alert(result.error);
+					}
 				}
 			});
 		}
@@ -38,13 +49,23 @@ $(document).ready(function() {
 			type: 'POST',
 			url: "/user/setting",
 			data: {
-
+				cookie: $.cookie('token'),
+				nickname: $('#nicknameInput').val(),
+				difficulty: difficulty
 			},
 			success: function(data) {
-
+				var result = jQuery.parseJSON(data);
+				if (result.success) {
+					$.cookie('name', $('#nicknameInput').val());
+					$.cookie('difficulty', difficulty);
+					alert("Changed Successfully");
+					window.location.replace("pre-landing.html");
+					// location.reload();
+				} else {
+					alert(result.error);
+				}
 			}
-		})
-		window.location.replace("pre-landing.html");
+		});
 	});
 
 	$('#cancel-btn').click(function() {
@@ -62,113 +83,145 @@ $(document).ready(function() {
 	});
 
 	$("#0-btn").click(function() {
-		for (var i = 0; i <= 10; i++) {
-			btnId = '#' + i.toString() + "-btn";
-			$(btnId).css("background-color", "white");
-			$(btnId).css("color", "black");
-		}
-		$("#0-btn").css("background-color", "CornflowerBlue");
-		$("#0-btn").css("color", "white");
-		var btnId = ""
+		$("#0-btn").css({
+			"background-color": "CornflowerBlue",
+			"color": "white"
+		});
+		btnId = '#' + difficulty + "-btn";
+		$(btnId).css({
+			"background-color": "white",
+			"color": "black"
+		});
+		difficulty = 0;
 	});
 
 	$("#1-btn").click(function() {
-		for (var i = 0; i <= 10; i++) {
-			btnId = '#' + i.toString() + "-btn";
-			$(btnId).css("background-color", "white");
-			$(btnId).css("color", "black");
-		}
-		$("#1-btn").css("background-color", "CornflowerBlue");
-		$("#1-btn").css("color", "white");
+		$("#1-btn").css({
+			"background-color": "CornflowerBlue",
+			"color": "white"
+		});
+		btnId = '#' + difficulty + "-btn";
+		$(btnId).css({
+			"background-color": "white",
+			"color": "black"
+		});
+		difficulty = 1;
 	});
 
 	$("#2-btn").click(function() {
-		for (var i = 0; i <= 10; i++) {
-			btnId = '#' + i.toString() + "-btn";
-			$(btnId).css("background-color", "white");
-			$(btnId).css("color", "black");
-		}
-		$("#2-btn").css("background-color", "CornflowerBlue");
-		$("#2-btn").css("color", "white");
+		$("#2-btn").css({
+			"background-color": "CornflowerBlue",
+			"color": "white"
+		});
+		btnId = '#' + difficulty + "-btn";
+		$(btnId).css({
+			"background-color": "white",
+			"color": "black"
+		});
+		difficulty = 2;
 	});
 
 	$("#3-btn").click(function() {
-		for (var i = 0; i <= 10; i++) {
-			btnId = '#' + i.toString() + "-btn";
-			$(btnId).css("background-color", "white");
-			$(btnId).css("color", "black");
-		}
-		$("#3-btn").css("background-color", "CornflowerBlue");
-		$("#3-btn").css("color", "white");
+		$("#3-btn").css({
+			"background-color": "CornflowerBlue",
+			"color": "white"
+		});
+		btnId = '#' + difficulty + "-btn";
+		$(btnId).css({
+			"background-color": "white",
+			"color": "black"
+		});
+		difficulty = 3;
 	});
 
 	$("#4-btn").click(function() {
-		for (var i = 0; i <= 10; i++) {
-			btnId = '#' + i.toString() + "-btn";
-			$(btnId).css("background-color", "white");
-			$(btnId).css("color", "black");
-		}
-		$("#4-btn").css("background-color", "CornflowerBlue");
-		$("#4-btn").css("color", "white");
+		$("#4-btn").css({
+			"background-color": "CornflowerBlue",
+			"color": "white"
+		});
+		btnId = '#' + difficulty + "-btn";
+		$(btnId).css({
+			"background-color": "white",
+			"color": "black"
+		});
+		difficulty = 4;
 	});
 
 	$("#5-btn").click(function() {
-		for (var i = 0; i <= 10; i++) {
-			btnId = '#' + i.toString() + "-btn";
-			$(btnId).css("background-color", "white");
-			$(btnId).css("color", "black");
-		}
-		$("#5-btn").css("background-color", "CornflowerBlue");
-		$("#5-btn").css("color", "white");
+		$("#5-btn").css({
+			"background-color": "CornflowerBlue",
+			"color": "white"
+		});
+		btnId = '#' + difficulty + "-btn";
+		$(btnId).css({
+			"background-color": "white",
+			"color": "black"
+		});
+		difficulty = 5;
 	});
 
 	$("#6-btn").click(function() {
-		for (var i = 0; i <= 10; i++) {
-			btnId = '#' + i.toString() + "-btn";
-			$(btnId).css("background-color", "white");
-			$(btnId).css("color", "black");
-		}
-		$("#6-btn").css("background-color", "CornflowerBlue");
-		$("#6-btn").css("color", "white");
+		$("#6-btn").css({
+			"background-color": "CornflowerBlue",
+			"color": "white"
+		});
+		btnId = '#' + difficulty + "-btn";
+		$(btnId).css({
+			"background-color": "white",
+			"color": "black"
+		});
+		difficulty = 6;
 	});
 
 	$("#7-btn").click(function() {
-		for (var i = 0; i <= 10; i++) {
-			btnId = '#' + i.toString() + "-btn";
-			$(btnId).css("background-color", "white");
-			$(btnId).css("color", "black");
-		}
-		$("#7-btn").css("background-color", "CornflowerBlue");
-		$("#7-btn").css("color", "white");
+		$("#7-btn").css({
+			"background-color": "CornflowerBlue",
+			"color": "white"
+		});
+		btnId = '#' + difficulty + "-btn";
+		$(btnId).css({
+			"background-color": "white",
+			"color": "black"
+		});
+		difficulty = 7;
 	});
 
 	$("#8-btn").click(function() {
-		for (var i = 0; i <= 10; i++) {
-			btnId = '#' + i.toString() + "-btn";
-			$(btnId).css("background-color", "white");
-			$(btnId).css("color", "black");
-		}
-		$("#8-btn").css("background-color", "CornflowerBlue");
-		$("#8-btn").css("color", "white");
+		$("#8-btn").css({
+			"background-color": "CornflowerBlue",
+			"color": "white"
+		});
+		btnId = '#' + difficulty + "-btn";
+		$(btnId).css({
+			"background-color": "white",
+			"color": "black"
+		});
+		difficulty = 8;
 	});
 
 	$("#9-btn").click(function() {
-		for (var i = 0; i <= 10; i++) {
-			btnId = '#' + i.toString() + "-btn";
-			$(btnId).css("background-color", "white");
-			$(btnId).css("color", "black");
-		}
-		$("#9-btn").css("background-color", "CornflowerBlue");
-		$("#9-btn").css("color", "white");
+		$("#9-btn").css({
+			"background-color": "CornflowerBlue",
+			"color": "white"
+		});
+		btnId = '#' + difficulty + "-btn";
+		$(btnId).css({
+			"background-color": "white",
+			"color": "black"
+		});
+		difficulty = 9;
 	});
 
 	$("#10-btn").click(function() {
-		for (var i = 0; i <= 10; i++) {
-			btnId = '#' + i.toString() + "-btn";
-			$(btnId).css("background-color", "white");
-			$(btnId).css("color", "black");
-		}
-		$("#10-btn").css("background-color", "CornflowerBlue");
-		$("#10-btn").css("color", "white");
+		$("#10-btn").css({
+			"background-color": "CornflowerBlue",
+			"color": "white"
+		});
+		btnId = '#' + difficulty + "-btn";
+		$(btnId).css({
+			"background-color": "white",
+			"color": "black"
+		});
+		difficulty = 10;
 	});
 });

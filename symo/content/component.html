@@ -1,0 +1,87 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="compressed.button.css" />
+<link rel="stylesheet" href="game.css">
+
+<script src="http://www.html5canvastutorials.com/libraries/kinetic-v3.10.0.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="validation.js"></script>
+<script src="game.js"></script>
+<script src="game2.js"></script>
+<script type="text/javascript">
+
+
+window.onload = function() {
+  // Get the window displayed in the iframe.
+  var receiver = window.parent;
+  if(receiver === null) return;
+  // Get a reference to the 'Send Message' button.
+  var btn = document.getElementById('game2Check');
+
+  // A function to handle sending messages.
+  function sendMessage(e) {
+    // Prevent any default browser behaviour.
+    e.preventDefault();
+    var func = function (theStatement) {alert(theStatement[0]);};
+    // Send a message with the text 'Hello Treehouse!' to the receiver window.
+    receiver.postMessage(getCurrent(), '*');
+  }
+
+  // Add an event listener that will execute the sendMessage() function
+  // when the send button is clicked.
+  btn.addEventListener('click', sendMessage);
+};
+</script>
+</head>
+<body onload="SetupDragDrop()" onresize = "SetupDragDrop()">
+
+<div id = "game" align = left>
+
+<div id = "content">
+<nav id="menu" align = right>
+	<div id = 'syms'><h2 id = "t1">Logic Symbols</h2></div>
+	<div align = center>
+	<div class="StartTarget">
+		<div class="HexagonDraggable and" title="AND" id = "pred_and" selectable="no" ></div></div>
+	<div class="StartTarget">
+		<div class="DiamondDraggable or" title="OR" id = "pred_or" selectable="no"></div></div>
+	<div class="StartTarget">
+		<div class="TriangleDraggable not" title="NOT" id = "pred_not" selectable="no" ></div></div>
+	<div class="StartTarget">
+		<div class="PentagonDraggable if" title="IF" id = "pred_if" selectable="no" ></div></div>
+	</div>
+</nav>
+<table align="center">
+	<tr>
+		<td><div class="StartTarget">
+			<div class="CloudDraggable prim" title="Jason works hard" id = "prim0" selectable="no"  ></div></div></td>
+		<td><div class="StartTarget">
+			<div class="EyeDraggable prim" title="his son will go to college" id = "prim1" selectable="no" ></div></div></td>
+		<td><div class="StartTarget">
+			<div class="HeartDraggable prim" title="his wife can buy lots of things" id = "prim2" selectable="no"></div></div></td>
+		<!--<td><div class="StartTarget">
+			<div class="LightningDraggable prim" id = "prim3" selectable="no"></div></div></td>
+		<td><div class="StartTarget">
+			<div class="PentagonDraggable prim" id = "prim4" selectable="no"></div></div></td>
+		<td><div class="StartTarget">
+			<div class="TriangleDraggable prim" id = "prim5" selectable="no"></div></div></td>
+		<td><div class="StartTarget">
+			<div class="Draggable prim" id = "prim6" selectable="no" style="background-color: orange;"></div></div></td>-->
+	</tr>
+</table>
+
+<table id = 'boxes' align="center">
+	<tr id = 'rowlist'>
+		<td><div id = box0 class="DropTarget">
+			</div></td>
+	</tr>
+</table>
+
+<div id = "buttonHolder" align = left>
+    <br><a id = "game2Check" href="#" class="blue button">Use Statement</a></br>
+</div>
+
+</br>
+</div>
+</body>
+</html>

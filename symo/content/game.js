@@ -5,11 +5,8 @@ var iClickOffsetX = 0;
 var iClickOffsetY = 0;
 var INTERVAL = 20;
 var glob = 0;
-var indexRec = 0
+var indexRec = 0;
 var solution = [];
-
-
-
 
 var condition = {};
 condition.predList = [];
@@ -27,7 +24,7 @@ condition.predList.push({
 });
 
 condition.predList.push({
-		predName: "pred",
+		predName: "prim",
 		color: "ff0000",
         evaluation: function (stack) {
             var arg1 = stack[stack.length-1];
@@ -76,7 +73,7 @@ condition.predList.push({
 				
 
 function OnLoad(){
-	solution = ["IF", "Jason works hard","AND","his son will go to college","his wife can buy lots of things"];
+	solution = ["if", 1, "and", 2, 3];
 	document.getElementById("ins1").style.font = "italic bold 20px arial,serif";
 	document.getElementById("ins2").style.font = "italic bold 20px arial,serif";
 	document.getElementById("t1").style.font = "italic bold 20px arial,serif";
@@ -101,13 +98,14 @@ function SetupDragDrop(){
 
 function MakeDragable(oBox){
 	if (navigator.platform=="iPad"){
-		oBox.ontouchstart= function(e){TouchStart(e)};
-		oBox.ontouchmove=function(e){TouchMove(e)};
-		oBox.ontouchend=function(e){TouchEnd(e)};
+		oBox.ontouchstart= function(e){TouchStart(e);};
+		oBox.ontouchmove=function(e){TouchMove(e);};
+		oBox.ontouchend=function(e){TouchEnd(e);};
 	}else{
-		oBox.onmousemove= function(e){DragMove(oBox,e)};
-		oBox.onmouseup=function(e){DragStop(oBox,e)};
-		oBox.onmousedown=function(e){DragStart(oBox,e);return false};
+		oBox.onmousemove= function(e){DragMove(oBox,e);};
+		oBox.onmouseup=function(e){DragStop(oBox,e);};
+		oBox.onmousedown=function(e){DragStart(oBox,e);
+			return false;};
 	}	
 }
 
@@ -172,16 +170,11 @@ function HandleDragMove(x,y){
 		var first = oDragItem.parentNode.parentNode.cellIndex;
 		glob = first;
 		indexRec = 1;
-		
-		
 		CountRemoveIndex();
 		//alert(glob);
 		deleteBoxes(first, glob - 1);
 		glob = 0;
-		
 		oDragItem.parentNode.removeChild(oDragItem);
-		
-		
 		oDragItem = null;
 		return;
 		
@@ -265,14 +258,20 @@ function DragStop(o,e){
 		window.removeEventListener ("mousemove", DragMove2, true);
 		window.removeEventListener ("mouseup",   DragStop2, true);
 	}
-	
+
 	HandleDragStop();
 }
 
 function getSolution(){
-	alert(getCurrent());
-	alert(solution);
-	alert(validateSolution(getCurrent(), solution, condition));
+    var statement = getCurrent();
+	if (!validateSolution(statement, solution, condition)) {
+        alert("Sorry, that's incorrect. Try again.");
+    }
+    else {
+        // Go to game 2
+        alert("Correct! You will now proceed to game 2.");
+        location.href = "/game2.html?" + statement.join();
+    }
 }
 
 function getCurrent(){
@@ -281,7 +280,13 @@ function getCurrent(){
 	for(var i=0; i<oList.length; i++){
 		var o = oList[i];
 		if (o.className == "DropTarget"){
-			currentList[currentList.length] = o.lastChild.title;
+            var id = o.lastChild.id;
+            var statementPart;
+            if (id.startsWith("prim"))
+                statementPart = parseInt(id.substring(4)) + 1;
+            else
+                statementPart = id.substring(5);
+			currentList[currentList.length] = statementPart;
 		}
 	}
 	//alert(currentList);
@@ -368,10 +373,6 @@ function TouchEnd(e){
 	HandleDragStop();
 }
 
-function $(s){
-	return document.getElementById(s);
-}
-
 
 function GetObjPos(obj){
 	var x = 0;
@@ -405,19 +406,17 @@ function OnTargetOut(){
 }
 
 function OnTargetDrop(){
-	
 	oDragItem.style.position="";
 	
-	if (oDragItem.parentNode.className.indexOf("DropTarget") <= -1){
-		
+	if (oDragItem.parentNode.className.indexOf("DropTarget") <= -1 && oDragTarget.className != "StartTarget"){
 		var n = 0;
 		var e = false;
-		
 		for (oo in condition.predList){
 			var object = condition.predList[oo];
 			if (oDragItem.className.indexOf(object.predName) > -1){
 				n = object.arity;
 				e = true;
+                break;
 			}
 			
 		}
@@ -430,20 +429,28 @@ function OnTargetDrop(){
 			return;
 		}
 		for (i = 0; i < n; i++){
-			ntd = document.createElement("td");
-			temp = oDragTarget.cloneNode();
-			
-			ntd.appendChild(temp);
-			oDragTarget.parentNode.parentNode.insertBefore(ntd,oDragTarget.parentNode.nextSibling);
-			oDragTarget.innerHTML = "";
-			SetupDragDrop();
+			//if (oDragTarget.lastChild == null){
+				ntd = document.createElement("td");
+				temp = oDragTarget.cloneNode();
+				ntd.appendChild(temp);
+				oDragTarget.parentNode.parentNode.insertBefore(ntd,oDragTarget.parentNode.nextSibling);
+				oDragTarget.innerHTML = "";
+				SetupDragDrop();
+			//}
 		}
 		temp = oDragItem.cloneNode();
-		oDragTarget.appendChild(temp);
+		//alert(oDragTarget.innerHTML);
+		if (oDragTarget.lastChild == null){
+			oDragTarget.appendChild(temp);
+			SetupDragDrop();
+		}
 		
 	}
 	else{
-		oDragItem.parentNode.removeChild(oDragItem);
+		if (oDragTarget.className != "StartTarget"){
+			oDragItem.parentNode.removeChild(oDragItem);
+		}
+			
 		
 	}
 		
@@ -453,10 +460,13 @@ function OnTargetDrop(){
 	oDropTargets = [];
 	
 	var oList = document.getElementsByTagName("div");
+	
 	for(var i=0; i<oList.length; i++){
 		var o = oList[i];
 		if (o.className == "DropTarget"){
-			oDropTargets.push(o);
+			if (typeof o.innerHTML.className != 'undefined'){
+				oDropTargets.push(o);
+			}
 			
 		}
 	}
