@@ -613,7 +613,7 @@ function addStatementImages(dom, statement, prefix, statementIndex, size, useVar
             imgName = "var" + statement[i] + ".png";
         else
             imgName = "prim" + statement[i] + ".png";
-        dom.append("<img src=\"" + imgName + "\" width=" + size + " height=" + size + " id=\"" + prefix + "_" + i + "\" />");
+        dom.append("<img src=\"" + imgName + "\" width=" + size + " height=" + size + " title=\"" + statement[i] + "\" id=\"" + prefix + "_" + i + "\" />");
         $("#" + prefix + "_" + i).data("index", i);
         $("#" + prefix + "_" + i).data("statementIndex", statementIndex);
         $("#" + prefix + "_" + i).click(clickPiece);
