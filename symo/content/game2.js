@@ -886,11 +886,11 @@ function OnLoad() {
 
     $("#statement" + allStatements.length).click(clickStatement);
     $("#statement" + allStatements.length).data("index", -1);
-    addStatementImages($("#prove"), ["or", "not", 1, 3], "conc", -1, 50, false);
+    addStatementImages($("#prove"), ["or", "not", 1, "and", 3, 2], "conc", -1, 50, false);
 }
 
 function checkWin(st) {
-    if (equals(st, ["or", "not", 1, 3])) {
+    if (equals(st, ["or", "not", 1, "and", 3, 2])) {
         alert("Congratulations! You've finished!");
         location.href = "/pre-landing.html";
     }
